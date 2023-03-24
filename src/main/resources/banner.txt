@@ -3,4 +3,5 @@
   | || |_  \___ \| |    
   | ||  _|  ___) | |___ 
  |___|_|   |____/ \____|
-                        
+
+Powered by Spring Boot ${spring-boot.version}

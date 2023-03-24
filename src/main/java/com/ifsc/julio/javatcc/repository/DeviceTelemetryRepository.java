@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface DeviceTelemetryRepository extends JpaRepository<DeviceTelemetryEntity, UUID> {
+public interface DeviceTelemetryRepository extends JpaRepository<DeviceTelemetryEntity, UUID>, DeviceTelemetryRepositoryCustom {
 }
