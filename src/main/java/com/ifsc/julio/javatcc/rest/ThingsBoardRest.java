@@ -35,8 +35,8 @@ public class ThingsBoardRest {
     public void getProperties(DeviceSearchDTO deviceSearch) throws Exception {
         URI uri = new URIBuilder(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
                 .addParameter("keys", deviceSearch.getKeysString())
-                .addParameter("startTs", valueOf(deviceSearch.getStart().getTime()))
-                .addParameter("endTs", valueOf(deviceSearch.getEnd().getTime()))
+                .addParameter("startTs", deviceSearch.getStartMiliseconds())
+                .addParameter("endTs", deviceSearch.getEndMiliseconds())
                 .build();
 
         HttpGet request = new HttpGet(uri);
