@@ -1,5 +1,6 @@
 package com.ifsc.julio.javatcc.dto.query;
 
+import com.ifsc.julio.javatcc.enumeration.TimePeriod;
 import lombok.*;
 import java.util.Date;
 
@@ -10,4 +11,5 @@ public class AverageSearchDTO {
     private String key;
     private Date start;
     private Date end;
+    private TimePeriod timePeriod;
 }

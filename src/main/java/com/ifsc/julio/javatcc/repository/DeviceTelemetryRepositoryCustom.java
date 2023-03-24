@@ -5,7 +5,5 @@ import java.util.List;
 
 public interface DeviceTelemetryRepositoryCustom {
 
-    List<DailyAverageDTO> getDailyAverages(AverageSearchDTO averageSearch);
-    List<WeeklyAverageDTO> getWeeklyAverages(AverageSearchDTO averageSearch);
-    List<MonthlyAverageDTO> getMonthlyAverages(AverageSearchDTO averageSearch);
+    List<AverageDTO> getAverage(AverageSearchDTO averageSearch);
 }

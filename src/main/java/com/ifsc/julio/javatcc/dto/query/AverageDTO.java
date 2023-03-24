@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class WeeklyAverageDTO {
+public class AverageDTO {
     private Integer week;
     private BigDecimal average;
 }
