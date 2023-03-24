@@ -23,6 +23,6 @@ public class ThingsboardDailySchedule {
                 .start(new Date())
                 .keys(List.of("temperature"))
                 .build();
-        thingsBoardRest.getProperties(deviceSearch);
+        thingsBoardRest.saveTelemetry(deviceSearch);
     }
 }

@@ -1,6 +1,9 @@
 package com.ifsc.julio.javatcc.rest;
 
-import com.ifsc.julio.javatcc.dto.DeviceSearchDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ifsc.julio.javatcc.dto.*;
+import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
+import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
 import com.ifsc.julio.javatcc.util.ThingsBoardUtil;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -14,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Date;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,9 +34,12 @@ public class ThingsBoardRest {
     private LocalDateTime localDateTimeToken;
 
     @Autowired
+    private DeviceTelemetryService deviceTelemetryService;
+
+    @Autowired
     private ThingsBoardUtil thingsBoardUtil;
 
-    public void getProperties(DeviceSearchDTO deviceSearch) throws Exception {
+    public void saveTelemetry(DeviceSearchDTO deviceSearch) throws Exception {
         URI uri = new URIBuilder(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
                 .addParameter("keys", deviceSearch.getKeysString())
                 .addParameter("startTs", deviceSearch.getStartMiliseconds())
@@ -45,7 +52,23 @@ public class ThingsBoardRest {
         HttpResponse response = httpClient.execute(request);
 
         String responseBody = EntityUtils.toString(response.getEntity());
-        System.out.println(responseBody);
+        ObjectMapper objectMapper = new ObjectMapper();
+        DeviceTelemetryDTO deviceTelemetry = objectMapper.readValue(responseBody, DeviceTelemetryDTO.class);
+        saveTelemetry(deviceTelemetry, thingsBoardUtil.getDevice());
+    }
+
+    private void saveTelemetry(DeviceTelemetryDTO deviceTelemetry, String deviceId) {
+        for (TelemetryKeyValuesDTO keyValuesDto : deviceTelemetry.getData()) {
+            for (TelemetryValueDTO valueDto : keyValuesDto.getValues()) {
+                DeviceTelemetryEntity telemetryEntity = new DeviceTelemetryEntity();
+                telemetryEntity.setDeviceId(deviceId);
+                telemetryEntity.setKey(keyValuesDto.getKey());
+                telemetryEntity.setDate(new Date(valueDto.getTs().intValue()));
+                telemetryEntity.setValue(valueDto.getValue());
+
+                deviceTelemetryService.save(telemetryEntity);
+            }
+        }
     }
 
     private String getToken() throws Exception {
