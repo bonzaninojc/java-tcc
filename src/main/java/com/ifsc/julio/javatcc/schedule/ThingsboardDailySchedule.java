@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.List;
 
 @EnableScheduling
 @Component
@@ -20,7 +21,7 @@ public class ThingsboardDailySchedule {
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
                 .end(new Date())
                 .start(new Date())
-                .keys("temperature")
+                .keys(List.of("temperature"))
                 .build();
         thingsBoardRest.getProperties(deviceSearch);
     }
