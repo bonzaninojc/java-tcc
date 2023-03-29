@@ -15,7 +15,6 @@ public class DeviceTelemetryEntity {
     @GeneratedValue
     private UUID id;
 
-    private String deviceId;
     private String key;
     private Date date;
     private BigDecimal value;
