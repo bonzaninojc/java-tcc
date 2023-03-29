@@ -6,6 +6,7 @@ import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class DeviceTelemetryServiceImpl implements DeviceTelemetryService {
@@ -15,7 +16,12 @@ public class DeviceTelemetryServiceImpl implements DeviceTelemetryService {
 
     @Transactional
     @Override
-    public void save(DeviceTelemetryEntity entity) {
-        deviceTelemetryRepository.save(entity);
+    public void saveAll(List<DeviceTelemetryEntity> entities) {
+        deviceTelemetryRepository.saveAll(entities);
+    }
+
+    @Override
+    public List<DeviceTelemetryEntity> findAll() {
+        return deviceTelemetryRepository.findAll();
     }
 }

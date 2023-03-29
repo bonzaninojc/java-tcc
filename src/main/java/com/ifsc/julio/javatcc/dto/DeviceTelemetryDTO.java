@@ -7,5 +7,5 @@ import java.util.List;
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 public class DeviceTelemetryDTO {
-    private List<TelemetryKeyValuesDTO> data;
+    private List<TelemetryValueDTO> temperature;
 }

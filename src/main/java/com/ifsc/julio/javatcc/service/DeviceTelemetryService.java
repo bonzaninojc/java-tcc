@@ -1,7 +1,9 @@
 package com.ifsc.julio.javatcc.service;
 
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
+import java.util.List;
 
 public interface DeviceTelemetryService {
-    void save(DeviceTelemetryEntity entity);
+    void saveAll(List<DeviceTelemetryEntity> entities);
+    List<DeviceTelemetryEntity> findAll();
 }
