@@ -1,33 +1,28 @@
 package com.ifsc.julio.javatcc.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ifsc.julio.javatcc.dto.*;
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
 import com.ifsc.julio.javatcc.util.ThingsBoardUtil;
-import org.apache.http.*;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import static java.lang.String.*;
 import static java.util.Objects.nonNull;
 
 @Component
 public class ThingsBoardRest {
 
-    private static final String LOGIN_ENDPOINT = "/auth/login";
+    private static final String LOGIN_ENDPOINT = "/api/auth/login";
     private static final String DEVICE_ENDPOINT = "%s/api/plugins/telemetry/DEVICE/%s/values/timeseries";
 
     private String tokenTemp;
@@ -39,19 +34,29 @@ public class ThingsBoardRest {
     @Autowired
     private ThingsBoardUtil thingsBoardUtil;
 
+    @Autowired
+    private Gson gson;
+
     public void saveTelemetry(DeviceSearchDTO deviceSearch) throws Exception {
-        URI uri = new URIBuilder(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
-                .addParameter("keys", deviceSearch.getKeysString())
-                .addParameter("startTs", deviceSearch.getStartMiliseconds())
-                .addParameter("endTs", deviceSearch.getEndMiliseconds())
-                .build();
+        RestTemplate restTemplate = new RestTemplate();
 
-        HttpGet request = new HttpGet(uri);
-        request.setHeader("x-Authorization", getToken());
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpResponse response = httpClient.execute(request);
+        URI uri = UriComponentsBuilder.fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
+                .queryParam("keys", deviceSearch.getKeysString())
+//                .queryParam("startTs", deviceSearch.getStartMiliseconds())
+//                .queryParam("endTs", deviceSearch.getEndMiliseconds())
+                .queryParam("startTs", "1616975631822")
+                .queryParam("endTs", "1680047631822")
+                .build()
+                .toUri();
 
-        String responseBody = EntityUtils.toString(response.getEntity());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-Authorization", getToken());
+
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        String responseBody = responseEntity.getBody();
+
         ObjectMapper objectMapper = new ObjectMapper();
         DeviceTelemetryDTO deviceTelemetry = objectMapper.readValue(responseBody, DeviceTelemetryDTO.class);
         saveTelemetry(deviceTelemetry, thingsBoardUtil.getDevice());
@@ -71,7 +76,7 @@ public class ThingsBoardRest {
         }
     }
 
-    private String getToken() throws Exception {
+    private String getToken() {
         if (nonNull(tokenTemp) && !isTokenExpired()) {
             return tokenTemp;
         }
@@ -85,21 +90,23 @@ public class ThingsBoardRest {
         return duration.toMinutes() > 59;
     }
 
-    public String getTokenWithUserCredentials() throws Exception {
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(thingsBoardUtil.getUrl() + LOGIN_ENDPOINT);
+    public String getTokenWithUserCredentials() {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject json = new JSONObject();
-        json.put("username", thingsBoardUtil.getUsername());
-        json.put("password", thingsBoardUtil.getPassword());
+        HttpEntity<String> request = new HttpEntity<>(getLogin(), headers);
+        ResponseEntity<String> response = restTemplate.exchange(thingsBoardUtil.getUrl() + LOGIN_ENDPOINT, HttpMethod.POST, request, String.class);
 
-        StringEntity entity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
-        request.setEntity(entity);
+        JSONObject jsonObject = new JSONObject(response.getBody());
+        return jsonObject.getString("token");
+    }
 
-        HttpResponse response = httpClient.execute(request);
-        HttpEntity responseEntity = response.getEntity();
-        JSONObject responseJson = new JSONObject(responseEntity.getContent().toString());
-
-        return responseJson.getString("token");
+    private String getLogin() {
+        LoginDTO login = LoginDTO.builder()
+                .username(thingsBoardUtil.getUsername())
+                .password(thingsBoardUtil.getPassword())
+                .build();
+        return gson.toJson(login);
     }
 }

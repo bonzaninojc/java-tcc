@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @EnableScheduling
@@ -16,11 +16,13 @@ public class ThingsboardDailySchedule {
     @Autowired
     private ThingsBoardRest thingsBoardRest;
 
-    @Scheduled(cron = "0 27 14 * * ?")
+    @Scheduled(cron = "0 17 21 * * ?")
     public void myScheduledTask() throws Exception {
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = LocalDateTime.now();
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
-                .end(new Date())
-                .start(new Date())
+//                .end(end)
+//                .start(start)
                 .keys(List.of("temperature"))
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
