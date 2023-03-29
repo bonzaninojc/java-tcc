@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 import static java.lang.String.*;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpMethod.*;
+import static org.springframework.web.util.UriComponentsBuilder.*;
 
 @Component
 public class ThingsBoardRest {
@@ -40,7 +40,7 @@ public class ThingsBoardRest {
     public void saveTelemetry(DeviceSearchDTO deviceSearch) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
 
-        URI uri = UriComponentsBuilder.fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
+        URI uri = fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
                 .queryParam("keys", deviceSearch.getKeysString())
 //                .queryParam("startTs", deviceSearch.getStartMiliseconds())
 //                .queryParam("endTs", deviceSearch.getEndMiliseconds())
@@ -95,9 +95,7 @@ public class ThingsBoardRest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> request = new HttpEntity<>(getLogin(), headers);
-        ResponseEntity<TokenDTO> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, TokenDTO.class);
-
-        TokenDTO token = response.getBody();
+        TokenDTO token = restTemplate.postForObject(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), request, TokenDTO.class);
         return format("Bearer %s", token.getToken());
     }
 
