@@ -28,7 +28,7 @@ public class ThingsBoardController {
     }
 
     @PostMapping
-    public void teste() throws Exception {
+    public void teste() {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now();
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()

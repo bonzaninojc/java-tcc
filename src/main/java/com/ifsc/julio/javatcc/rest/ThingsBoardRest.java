@@ -1,6 +1,5 @@
 package com.ifsc.julio.javatcc.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.ifsc.julio.javatcc.dto.*;
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
@@ -20,11 +19,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import static java.lang.String.*;
 import static java.util.Objects.nonNull;
+import static org.springframework.http.HttpMethod.*;
 
 @Component
 public class ThingsBoardRest {
 
-    private static final String LOGIN_ENDPOINT = "/api/auth/login";
+    private static final String LOGIN_ENDPOINT = "%s/api/auth/login";
     private static final String DEVICE_ENDPOINT = "%s/api/plugins/telemetry/DEVICE/%s/values/timeseries";
 
     private String tokenTemp;
@@ -39,7 +39,7 @@ public class ThingsBoardRest {
     @Autowired
     private Gson gson;
 
-    public void saveTelemetry(DeviceSearchDTO deviceSearch) throws Exception {
+    public void saveTelemetry(DeviceSearchDTO deviceSearch) {
         RestTemplate restTemplate = new RestTemplate();
 
         URI uri = UriComponentsBuilder.fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
@@ -56,7 +56,7 @@ public class ThingsBoardRest {
 
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, GET, entity, String.class);
         String responseBody = responseEntity.getBody();
 
         DeviceTelemetryDTO deviceTelemetry = gson.fromJson(responseBody, DeviceTelemetryDTO.class);
@@ -80,8 +80,8 @@ public class ThingsBoardRest {
             return tokenTemp;
         }
         localDateTimeToken = LocalDateTime.now();
-        tokenTemp = getTokenWithUserCredentials();
-        return format("Bearer %s", tokenTemp);
+        tokenTemp = format("Bearer %s", tokenTemp);
+        return tokenTemp;
     }
 
     private boolean isTokenExpired() {
@@ -95,7 +95,7 @@ public class ThingsBoardRest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> request = new HttpEntity<>(getLogin(), headers);
-        ResponseEntity<String> response = restTemplate.exchange(thingsBoardUtil.getUrl() + LOGIN_ENDPOINT, HttpMethod.POST, request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, String.class);
 
         JSONObject jsonObject = new JSONObject(response.getBody());
         return jsonObject.getString("token");

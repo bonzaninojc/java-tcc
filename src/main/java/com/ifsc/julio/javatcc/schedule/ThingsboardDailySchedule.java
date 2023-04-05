@@ -17,7 +17,7 @@ public class ThingsboardDailySchedule {
     private ThingsBoardRest thingsBoardRest;
 
     @Scheduled(cron = "0 17 21 * * ?")
-    public void myScheduledTask() throws Exception {
+    public void myScheduledTask() {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now();
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
