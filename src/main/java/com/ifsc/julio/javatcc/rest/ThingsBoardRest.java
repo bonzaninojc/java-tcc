@@ -80,7 +80,7 @@ public class ThingsBoardRest {
             return tokenTemp;
         }
         localDateTimeToken = LocalDateTime.now();
-        tokenTemp = format("Bearer %s", tokenTemp);
+        tokenTemp = format("Bearer %s", getTokenWithUserCredentials());
         return tokenTemp;
     }
 
