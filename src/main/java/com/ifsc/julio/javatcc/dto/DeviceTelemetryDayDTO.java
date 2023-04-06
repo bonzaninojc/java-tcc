@@ -10,4 +10,5 @@ import java.util.Date;
 public class DeviceTelemetryDayDTO {
     private BigDecimal average;
     private Date day;
+    private String key;
 }

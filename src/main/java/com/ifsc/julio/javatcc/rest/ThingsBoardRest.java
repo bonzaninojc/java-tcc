@@ -8,15 +8,15 @@ import com.ifsc.julio.javatcc.util.ThingsBoardUtil;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import java.util.List;
+
 import static java.lang.String.*;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpMethod.*;
@@ -44,10 +44,8 @@ public class ThingsBoardRest {
 
         URI uri = UriComponentsBuilder.fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
                 .queryParam("keys", deviceSearch.getKeysString())
-//                .queryParam("startTs", deviceSearch.getStartMiliseconds())
-//                .queryParam("endTs", deviceSearch.getEndMiliseconds())
-                .queryParam("startTs", "1616975631822")
-                .queryParam("endTs", "1680047631822")
+                .queryParam("startTs", deviceSearch.getStartMiliseconds())
+                .queryParam("endTs", deviceSearch.getEndMiliseconds())
                 .build()
                 .toUri();
 
@@ -65,13 +63,18 @@ public class ThingsBoardRest {
 
     private void saveTelemetry(DeviceTelemetryDTO deviceTelemetry) {
         List<DeviceTelemetryEntity> entities = new ArrayList<>();
-        for (TelemetryValueDTO telemetryValue : deviceTelemetry.getTemperature()) {
-            DeviceTelemetryEntity telemetryEntity = new DeviceTelemetryEntity();
-            telemetryEntity.setKey("temperature");
-            telemetryEntity.setDate(new Date(telemetryValue.getTs().intValue()));
-            telemetryEntity.setValue(telemetryValue.getValue());
-            entities.add(telemetryEntity);
-        }
+        HashMap<String, List<TelemetryValueDTO>> devices = deviceTelemetry.getDevices();
+
+        devices.forEach((key, list) -> {
+            for (TelemetryValueDTO telemetryValue : list) {
+                DeviceTelemetryEntity telemetryEntity = new DeviceTelemetryEntity();
+                telemetryEntity.setKey(key);
+                telemetryEntity.setDate(new Date(telemetryValue.getTs().intValue()));
+                telemetryEntity.setValue(telemetryValue.getValue());
+                entities.add(telemetryEntity);
+            }
+        });
+
         deviceTelemetryService.saveAll(entities);
     }
 

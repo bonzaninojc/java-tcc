@@ -18,15 +18,18 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
         jpql.append(" SELECT ")
             .append(" new com.ifsc.julio.javatcc.dto.DeviceTelemetryHourDTO( ")
             .append("    AVG(value) as average, ")
-            .append("    DATE_TRUNC('hour', date) AS hour ")
+            .append("    DATE_TRUNC('hour', date) AS hour, ")
+            .append("    key ")
             .append(" ) ")
             .append(" FROM DeviceTelemetryEntity ")
             .append(" WHERE date BETWEEN :initDate AND :dataFinal ")
+            .append(" AND key = :key ")
             .append(" GROUP BY hour ");
 
         return em.createQuery(jpql.toString(), DeviceTelemetryHourDTO.class)
                 .setParameter("initDate", dto.getInitDate())
                 .setParameter("finalDate", dto.getFinalDate())
+                .setParameter("key", dto.getKey())
                 .getResultList();
     }
 
@@ -36,15 +39,18 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
         jpql.append(" SELECT ")
             .append(" new com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDTO( ")
             .append("    AVG(value) as average, ")
-            .append("    DATE_TRUNC('day', date) AS day ")
+            .append("    DATE_TRUNC('day', date) AS day, ")
+            .append("    key ")
             .append(" ) ")
             .append(" FROM DeviceTelemetryEntity ")
             .append(" WHERE date BETWEEN :initDate AND :dataFinal ")
+            .append(" AND key = :key ")
             .append(" GROUP BY day ");
 
         return em.createQuery(jpql.toString(), DeviceTelemetryDayDTO.class)
                 .setParameter("initDate", dto.getInitDate())
                 .setParameter("finalDate", dto.getFinalDate())
+                .setParameter("key", dto.getKey())
                 .getResultList();
     }
 }

@@ -9,4 +9,5 @@ import java.util.Date;
 public class AverageDTO {
     private Date initDate;
     private Date finalDate;
+    private String key;
 }

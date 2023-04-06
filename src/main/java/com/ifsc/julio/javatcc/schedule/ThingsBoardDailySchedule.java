@@ -22,6 +22,22 @@ public class ThingsBoardDailySchedule {
 
     @Scheduled(cron = "0 0 0,5 * * *")
     public void dailySchedule() {
+        List<DeviceTelemetryDayDTO> devices = deviceTelemetryService.getDayAverage(getAverageDTO());
+
+        List<DeviceTelemetryDayEntity> entities = new ArrayList<>();
+        devices.forEach(device -> {
+            DeviceTelemetryDayEntity deviceTelemetryDayEntity = DeviceTelemetryDayEntity.builder()
+                    .date(device.getDay())
+                    .value(device.getAverage())
+                    .key(device.getKey())
+                    .build();
+
+            entities.add(deviceTelemetryDayEntity);
+        });
+        deviceTelemetryDayService.saveAll(entities);
+    }
+
+    private AverageDTO getAverageDTO() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
 
@@ -31,24 +47,9 @@ public class ThingsBoardDailySchedule {
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         Date initDate = calendar.getTime();
 
-        AverageDTO averageDTO = AverageDTO.builder()
+        return AverageDTO.builder()
                 .initDate(initDate)
                 .finalDate(finalDate)
                 .build();
-
-        List<DeviceTelemetryDayDTO> devices = deviceTelemetryService.getDayAverage(averageDTO);
-
-        List<DeviceTelemetryDayEntity> entities = new ArrayList<>();
-        devices.forEach(device -> {
-            DeviceTelemetryDayEntity deviceTelemetryDayEntity = DeviceTelemetryDayEntity.builder()
-                    .key("temperature")
-                    .date(device.getDay())
-                    .value(device.getAverage())
-                    .build();
-
-            entities.add(deviceTelemetryDayEntity);
-        });
-
-        deviceTelemetryDayService.saveAll(entities);
     }
 }

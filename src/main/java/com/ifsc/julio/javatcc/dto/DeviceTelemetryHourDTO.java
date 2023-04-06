@@ -12,5 +12,6 @@ import java.util.Date;
 public class DeviceTelemetryHourDTO {
     private BigDecimal average;
     private Date hour;
+    private String key;
 }
 
