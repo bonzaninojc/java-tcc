@@ -1,30 +1,50 @@
 package com.ifsc.julio.javatcc.repository.impl;
 
-import com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDto;
+import com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDTO;
+import com.ifsc.julio.javatcc.dto.DeviceTelemetryHourDTO;
+import com.ifsc.julio.javatcc.dto.AverageDTO;
 import com.ifsc.julio.javatcc.repository.DeviceTelemetryRepositoryCustom;
 import jakarta.persistence.*;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Override
+    public List<DeviceTelemetryHourDTO> getHourAverage(AverageDTO dto) {
+        StringBuilder jpql = new StringBuilder();
+        jpql.append(" SELECT ")
+            .append(" new com.ifsc.julio.javatcc.dto.DeviceTelemetryHourDTO( ")
+            .append("    AVG(value) as average, ")
+            .append("    DATE_TRUNC('hour', date) AS hour ")
+            .append(" ) ")
+            .append(" FROM DeviceTelemetryEntity ")
+            .append(" WHERE date BETWEEN :initDate AND :dataFinal ")
+            .append(" GROUP BY hour ");
+
+        return em.createQuery(jpql.toString(), DeviceTelemetryHourDTO.class)
+                .setParameter("initDate", dto.getInitDate())
+                .setParameter("finalDate", dto.getFinalDate())
+                .getResultList();
+    }
 
     @Override
-    public void getMedia() {
+    public List<DeviceTelemetryDayDTO> getDayAverage(AverageDTO dto) {
+        StringBuilder jpql = new StringBuilder();
+        jpql.append(" SELECT ")
+            .append(" new com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDTO( ")
+            .append("    AVG(value) as average, ")
+            .append("    DATE_TRUNC('day', date) AS day ")
+            .append(" ) ")
+            .append(" FROM DeviceTelemetryEntity ")
+            .append(" WHERE date BETWEEN :initDate AND :dataFinal ")
+            .append(" GROUP BY day ");
 
-        String sql = "SELECT AVG(value) as average, DATE_TRUNC('day', date) AS day FROM device_telemetry GROUP BY day;";
-        List<Object[]> results = em.createNativeQuery(sql).getResultList();
-
-        List<DeviceTelemetryDayDto> dtos = results.stream()
-                .map(result -> modelMapper.map(result, DeviceTelemetryDayDto.class))
-                .collect(Collectors.toList());
-
+        return em.createQuery(jpql.toString(), DeviceTelemetryDayDTO.class)
+                .setParameter("initDate", dto.getInitDate())
+                .setParameter("finalDate", dto.getFinalDate())
+                .getResultList();
     }
 }

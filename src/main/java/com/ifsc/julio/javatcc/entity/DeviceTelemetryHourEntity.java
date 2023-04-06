@@ -1,20 +1,19 @@
 package com.ifsc.julio.javatcc.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "device_telemetry_day")
-public class DeviceTelemetryDayEntity {
+@Table(name = "device_telemetry_hour")
+public class DeviceTelemetryHourEntity {
 
     @Id
     @GeneratedValue

@@ -7,7 +7,7 @@ import java.util.Date;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class DeviceTelemetryDayDto {
+public class DeviceTelemetryDayDTO {
     private BigDecimal average;
     private Date day;
 }

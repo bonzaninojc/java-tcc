@@ -7,6 +7,7 @@ import java.util.*;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "device_telemetry")
 public class DeviceTelemetryEntity {
