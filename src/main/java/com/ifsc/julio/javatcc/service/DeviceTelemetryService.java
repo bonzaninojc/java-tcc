@@ -6,4 +6,5 @@ import java.util.List;
 public interface DeviceTelemetryService {
     void saveAll(List<DeviceTelemetryEntity> entities);
     List<DeviceTelemetryEntity> findAll();
+    void getMedia();
 }

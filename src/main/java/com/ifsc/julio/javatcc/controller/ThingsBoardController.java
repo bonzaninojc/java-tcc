@@ -38,4 +38,9 @@ public class ThingsBoardController {
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
     }
+
+    @PostMapping("a")
+    public void teste2() {
+        deviceTelemetryService.getMedia();
+    }
 }

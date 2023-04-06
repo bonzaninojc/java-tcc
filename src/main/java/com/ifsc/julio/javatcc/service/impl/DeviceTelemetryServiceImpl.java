@@ -24,4 +24,9 @@ public class DeviceTelemetryServiceImpl implements DeviceTelemetryService {
     public List<DeviceTelemetryEntity> findAll() {
         return deviceTelemetryRepository.findAll();
     }
+
+    @Override
+    public void getMedia() {
+        deviceTelemetryRepository.getMedia();
+    }
 }

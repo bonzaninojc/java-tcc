@@ -1,45 +1,30 @@
 package com.ifsc.julio.javatcc.repository.impl;
 
-import com.ifsc.julio.javatcc.dto.query.*;
-import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
-import com.ifsc.julio.javatcc.enumeration.TimePeriod;
+import com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDto;
 import com.ifsc.julio.javatcc.repository.DeviceTelemetryRepositoryCustom;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public List<AverageDTO> getAverage(AverageSearchDTO averageSearch) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<AverageDTO> query = builder.createQuery(AverageDTO.class);
-        Root<DeviceTelemetryEntity> root = query.from(DeviceTelemetryEntity.class);
-        Expression<?> expressions = getExpressions(averageSearch.getTimePeriod(), builder, root.get("date"));
+    public void getMedia() {
 
-        query.select(builder.construct(AverageDTO.class, expressions, builder.avg(root.get("value"))))
-             .where(builder.between(root.get("date"), averageSearch.getStart(), averageSearch.getEnd()))
-             .where(builder.equal(root.get("key"), averageSearch.getKey()))
-             .groupBy(expressions);
+        String sql = "SELECT AVG(value) as average, DATE_TRUNC('day', date) AS day FROM device_telemetry GROUP BY day;";
+        List<Object[]> results = em.createNativeQuery(sql).getResultList();
 
-        TypedQuery<AverageDTO> typedQuery = em.createQuery(query);
-        return typedQuery.getResultList();
-    }
+        List<DeviceTelemetryDayDto> dtos = results.stream()
+                .map(result -> modelMapper.map(result, DeviceTelemetryDayDto.class))
+                .collect(Collectors.toList());
 
-    private Expression<?> getExpressions(TimePeriod timePeriod, CriteriaBuilder builder, Path<DeviceTelemetryEntity> path) {
-        switch(timePeriod) {
-            default:
-            case DAILY:
-                return builder.function("day", Integer.class, path);
-            case WEEKLY:
-                return builder.function("week", Integer.class, path);
-            case MONTHLY:
-                Expression<Integer> yearExpression = builder.function("year", Integer.class, path);
-                Expression<Integer> monthExpression = builder.function("month", Integer.class, path);
-                return (Expression<?>) builder.array(yearExpression, monthExpression);
-        }
     }
 }
