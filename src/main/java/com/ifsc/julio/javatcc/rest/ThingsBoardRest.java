@@ -9,14 +9,13 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
+import static com.ifsc.julio.javatcc.enumeration.Station.*;
 import static java.lang.String.*;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpMethod.*;
@@ -71,10 +70,10 @@ public class ThingsBoardRest {
                 telemetryEntity.setKey(key);
                 telemetryEntity.setDate(new Date(telemetryValue.getTs().intValue()));
                 telemetryEntity.setValue(telemetryValue.getValue());
+                telemetryEntity.setStation(TUBARAO);
                 entities.add(telemetryEntity);
             }
         });
-
         deviceTelemetryService.saveAll(entities);
     }
 
@@ -89,7 +88,7 @@ public class ThingsBoardRest {
 
     private boolean isTokenExpired() {
         Duration duration = Duration.between(localDateTimeToken, LocalDateTime.now());
-        return duration.toMinutes() > 59;
+        return duration.toMinutes() > 58;
     }
 
     public String getTokenWithUserCredentials() {
@@ -99,6 +98,8 @@ public class ThingsBoardRest {
 
         HttpEntity<String> request = new HttpEntity<>(getLogin(), headers);
         ResponseEntity<String> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, String.class);
+
+        //TODO - Teste com TokenDto
 
         JSONObject jsonObject = new JSONObject(response.getBody());
         return jsonObject.getString("token");

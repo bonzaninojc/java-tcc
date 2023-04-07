@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.*;
+import static com.ifsc.julio.javatcc.enumeration.Station.TUBARAO;
 
 @EnableScheduling
 @Component
@@ -42,6 +43,7 @@ public class ThingsBoardHourSchedule {
                     .date(device.getHour())
                     .value(device.getAverage())
                     .key(device.getKey())
+                    .station(device.getStation())
                     .build();
 
             entities.add(deviceTelemetryHourEntity);
@@ -62,6 +64,8 @@ public class ThingsBoardHourSchedule {
         return AverageDTO.builder()
                 .initDate(initDate)
                 .finalDate(finalDate)
+                .key("temperature")
+                .station(TUBARAO)
                 .build();
     }
 }
