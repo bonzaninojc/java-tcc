@@ -5,10 +5,8 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "device_telemetry_hour")
