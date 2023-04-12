@@ -16,41 +16,41 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
     public List<DeviceTelemetryHourDTO> getHourAverage(AverageDTO dto) {
         StringBuilder jpql = new StringBuilder();
         jpql.append(" SELECT ")
-            .append(" new com.ifsc.julio.javatcc.dto.DeviceTelemetryHourDTO( ")
-            .append("    AVG(value) as average, ")
-            .append("    DATE_TRUNC('hour', date) AS hour, ")
-            .append("    key ")
-            .append(" ) ")
-            .append(" FROM DeviceTelemetryEntity ")
-            .append(" WHERE date BETWEEN :initDate AND :dataFinal ")
+            .append("      AVG(value) as average, ")
+            .append("      DATE_TRUNC('hour', date) AS hour, ")
+            .append("      key ")
+            .append(" FROM device_telemetry ")
+            .append(" WHERE date BETWEEN :initDate AND :finalDate ")
             .append(" AND key = :key ")
-            .append(" GROUP BY hour ");
+            .append(" GROUP BY hour, key ");
 
-        return em.createQuery(jpql.toString(), DeviceTelemetryHourDTO.class)
+        List<DeviceTelemetryHourDTO> result = em.createNativeQuery(jpql.toString())
                 .setParameter("initDate", dto.getInitDate())
                 .setParameter("finalDate", dto.getFinalDate())
                 .setParameter("key", dto.getKey())
                 .getResultList();
+        return result;
     }
 
     @Override
     public List<DeviceTelemetryDayDTO> getDayAverage(AverageDTO dto) {
         StringBuilder jpql = new StringBuilder();
         jpql.append(" SELECT ")
-            .append(" new com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDTO( ")
-            .append("    AVG(value) as average, ")
-            .append("    DATE_TRUNC('day', date) AS day, ")
-            .append("    key ")
-            .append(" ) ")
-            .append(" FROM DeviceTelemetryEntity ")
-            .append(" WHERE date BETWEEN :initDate AND :dataFinal ")
+            .append("      AVG(value) as average, ")
+            .append("      DATE_TRUNC('day', date) AS day, ")
+            .append("      key AS key ")
+            .append(" FROM device_telemetry ")
+            .append(" WHERE date BETWEEN :initDate AND :finalDate ")
             .append(" AND key = :key ")
-            .append(" GROUP BY day ");
+            .append(" GROUP BY day, key ");
 
-        return em.createQuery(jpql.toString(), DeviceTelemetryDayDTO.class)
+        //TODO - Resolver
+
+        List<DeviceTelemetryDayDTO> result = em.createNativeQuery(jpql.toString(), DeviceTelemetryDayDTO.class)
                 .setParameter("initDate", dto.getInitDate())
                 .setParameter("finalDate", dto.getFinalDate())
                 .setParameter("key", dto.getKey())
                 .getResultList();
+        return result;
     }
 }

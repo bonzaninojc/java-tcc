@@ -1,8 +1,15 @@
 package com.ifsc.julio.javatcc.controller;
 
+import com.ifsc.julio.javatcc.dto.AverageDTO;
 import com.ifsc.julio.javatcc.dto.DeviceSearchDTO;
+import com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDTO;
+import com.ifsc.julio.javatcc.dto.DeviceTelemetryHourDTO;
+import com.ifsc.julio.javatcc.entity.DeviceTelemetryDayEntity;
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
+import com.ifsc.julio.javatcc.entity.DeviceTelemetryHourEntity;
 import com.ifsc.julio.javatcc.rest.ThingsBoardRest;
+import com.ifsc.julio.javatcc.service.DeviceTelemetryDayService;
+import com.ifsc.julio.javatcc.service.DeviceTelemetryHourService;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import static java.time.temporal.ChronoUnit.*;
 
 @RestController
 @RequestMapping("/things-board")
@@ -22,6 +33,9 @@ public class ThingsBoardController {
     @Autowired
     private ThingsBoardRest thingsBoardRest;
 
+    @Autowired
+    private DeviceTelemetryDayService deviceTelemetryDayService;
+
     @GetMapping
     public List<DeviceTelemetryEntity> list() {
         return deviceTelemetryService.findAll();
@@ -29,13 +43,36 @@ public class ThingsBoardController {
 
     @PostMapping
     public void teste() {
-        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.now().minus(2, YEARS);
         LocalDateTime end = LocalDateTime.now();
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
-//                .end(end)
-//                .start(start)
+                .end(localDateTimeToDate(end))
+                .start(localDateTimeToDate(start))
                 .keys(List.of("temperature"))
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
+
+        List<DeviceTelemetryDayDTO> devices = deviceTelemetryService.getDayAverage(
+                AverageDTO.builder()
+                .initDate(localDateTimeToDate(start))
+                .finalDate(localDateTimeToDate(end))
+                .key("temperature")
+                .build());
+
+        List<DeviceTelemetryDayEntity> entities = new ArrayList<>();
+        devices.forEach(device -> {
+            DeviceTelemetryDayEntity deviceTelemetryDayEntity = DeviceTelemetryDayEntity.builder()
+                    .date(device.getDay())
+                    .value(device.getAverage())
+                    .key(device.getKey())
+                    .build();
+
+            entities.add(deviceTelemetryDayEntity);
+        });
+        deviceTelemetryDayService.saveAll(entities);
+    }
+
+    private Date localDateTimeToDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

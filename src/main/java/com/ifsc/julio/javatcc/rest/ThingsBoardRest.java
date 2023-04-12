@@ -69,12 +69,11 @@ public class ThingsBoardRest {
             for (TelemetryValueDTO telemetryValue : list) {
                 DeviceTelemetryEntity telemetryEntity = new DeviceTelemetryEntity();
                 telemetryEntity.setKey(key);
-                telemetryEntity.setDate(new Date(telemetryValue.getTs().intValue()));
+                telemetryEntity.setDate(new Date(telemetryValue.getTs()));
                 telemetryEntity.setValue(telemetryValue.getValue());
                 entities.add(telemetryEntity);
             }
         });
-
         deviceTelemetryService.saveAll(entities);
     }
 

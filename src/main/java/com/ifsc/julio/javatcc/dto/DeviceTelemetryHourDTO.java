@@ -1,7 +1,6 @@
 package com.ifsc.julio.javatcc.dto;
 
 import lombok.*;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -10,7 +9,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class DeviceTelemetryHourDTO {
-    private BigDecimal average;
+    private Double average;
     private Date hour;
     private String key;
 }
