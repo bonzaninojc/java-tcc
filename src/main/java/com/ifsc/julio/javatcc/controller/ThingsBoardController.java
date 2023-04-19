@@ -43,19 +43,24 @@ public class ThingsBoardController {
     public void teste() {
         LocalDateTime start = LocalDateTime.now().minus(2, YEARS);
         LocalDateTime end = LocalDateTime.now();
+        List<String> keys = List.of(TEMPERATURE, HUMIDITY);
+
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
                 .end(localDateTimeToDate(end))
                 .start(localDateTimeToDate(start))
-                .keys(List.of(TEMPERATURE, HUMIDITY))
+                .keys(keys)
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
 
-        List<DeviceTelemetryDayDTO> devices = deviceTelemetryService.getDayAverage(
-                AverageDTO.builder()
-                .initDate(localDateTimeToDate(start))
-                .finalDate(localDateTimeToDate(end))
-                .key(TEMPERATURE)
-                .build());
+        List<DeviceTelemetryDayDTO> devices = new ArrayList<>();
+        keys.forEach(key -> {
+            devices.addAll(deviceTelemetryService.getDayAverage(
+                    AverageDTO.builder()
+                            .initDate(localDateTimeToDate(start))
+                            .finalDate(localDateTimeToDate(end))
+                            .key(key)
+                            .build()));
+        });
 
         List<DeviceTelemetryDayEntity> entities = new ArrayList<>();
         devices.forEach(device -> {
