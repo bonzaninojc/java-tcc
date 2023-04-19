@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.*;
+import static com.ifsc.julio.javatcc.util.Const.TEMPERATURE;
 
 @EnableScheduling
 @Component
@@ -30,7 +31,7 @@ public class ThingsBoardHourSchedule {
                 .start(averageDTO.getInitDate())
                 .end(averageDTO.getFinalDate())
                 //TODO - Pegar keys validas
-                .keys(List.of("temperature"))
+                .keys(List.of(TEMPERATURE))
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
 

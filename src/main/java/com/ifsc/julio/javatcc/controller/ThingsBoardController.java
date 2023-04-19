@@ -18,6 +18,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import static com.ifsc.julio.javatcc.util.Const.*;
 import static java.time.temporal.ChronoUnit.*;
 
 @RestController
@@ -45,7 +46,7 @@ public class ThingsBoardController {
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
                 .end(localDateTimeToDate(end))
                 .start(localDateTimeToDate(start))
-                .keys(List.of("temperature"))
+                .keys(List.of(TEMPERATURE, HUMIDITY))
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
 
@@ -53,7 +54,7 @@ public class ThingsBoardController {
                 AverageDTO.builder()
                 .initDate(localDateTimeToDate(start))
                 .finalDate(localDateTimeToDate(end))
-                .key("temperature")
+                .key(TEMPERATURE)
                 .build());
 
         List<DeviceTelemetryDayEntity> entities = new ArrayList<>();

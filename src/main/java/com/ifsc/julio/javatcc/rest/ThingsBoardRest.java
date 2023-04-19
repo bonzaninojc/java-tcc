@@ -9,7 +9,6 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -95,10 +94,10 @@ public class ThingsBoardRest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> request = new HttpEntity<>(getLogin(), headers);
-        ResponseEntity<String> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, String.class);
+        ResponseEntity<TokenDTO> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, TokenDTO.class);
 
-        JSONObject jsonObject = new JSONObject(response.getBody());
-        return jsonObject.getString("token");
+        TokenDTO tokenDTO = response.getBody();
+        return tokenDTO.getToken();
     }
 
     private String getLogin() {
