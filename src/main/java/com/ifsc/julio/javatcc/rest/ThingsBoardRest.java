@@ -14,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import static com.ifsc.julio.javatcc.util.Const.*;
 import static java.lang.String.*;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpMethod.*;
@@ -43,6 +44,7 @@ public class ThingsBoardRest {
                 .queryParam("keys", deviceSearch.getKeysString())
                 .queryParam("startTs", deviceSearch.getStartMiliseconds())
                 .queryParam("endTs", deviceSearch.getEndMiliseconds())
+                .queryParam("limit", REGISTER_LIMIT)
                 .build()
                 .toUri();
 
