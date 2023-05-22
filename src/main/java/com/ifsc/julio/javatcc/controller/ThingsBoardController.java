@@ -8,6 +8,7 @@ import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
 import com.ifsc.julio.javatcc.rest.ThingsBoardRest;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryDayService;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
+import com.ifsc.julio.javatcc.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import static com.ifsc.julio.javatcc.util.Const.*;
@@ -34,6 +36,9 @@ public class ThingsBoardController {
     @Autowired
     private DeviceTelemetryDayService deviceTelemetryDayService;
 
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping
     public List<DeviceTelemetryEntity> list() {
         return deviceTelemetryService.findAll();
@@ -43,7 +48,7 @@ public class ThingsBoardController {
     public void teste() {
         LocalDateTime start = LocalDateTime.now().minus(2, YEARS);
         LocalDateTime end = LocalDateTime.now();
-        List<String> keys = List.of(TEMPERATURE, HUMIDITY);
+        List<String> keys = Arrays.asList(TEMPERATURE, HUMIDITY);
 
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
                 .end(localDateTimeToDate(end))
@@ -77,5 +82,13 @@ public class ThingsBoardController {
 
     private Date localDateTimeToDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    @PostMapping("email")
+    public void email() {
+        String destinatario = "julio.bp25@aluno.ifsc.edu.br";
+        String assunto = "Teste Envio de email";
+        String mensagem = "Olá";
+        emailService.enviarEmail(destinatario, assunto, mensagem);
     }
 }
