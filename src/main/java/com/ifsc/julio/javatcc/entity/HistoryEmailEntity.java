@@ -9,16 +9,15 @@ import java.util.UUID;
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "device_telemetry_day")
-public class DeviceTelemetryDayEntity {
+@Table(name = "history_email")
+public class HistoryEmailEntity {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    private String key;
+    private String text;
     private Date date;
-    private Double value;
 
     @ManyToOne
     @JoinColumn(name = "id_station")

@@ -1,31 +1,33 @@
-package com.ifsc.julio.javatcc.controller;
+package com.ifsc.julio.javatcc.config;
 
 import com.ifsc.julio.javatcc.dto.AverageDTO;
 import com.ifsc.julio.javatcc.dto.DeviceSearchDTO;
 import com.ifsc.julio.javatcc.dto.DeviceTelemetryDayDTO;
+import com.ifsc.julio.javatcc.dto.StationDTO;
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryDayEntity;
-import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
+import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.rest.ThingsBoardRest;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryDayService;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
-import com.ifsc.julio.javatcc.service.EmailService;
+import com.ifsc.julio.javatcc.service.StationService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import static com.ifsc.julio.javatcc.util.Const.*;
-import static java.time.temporal.ChronoUnit.*;
+import static com.ifsc.julio.javatcc.util.Const.HUMIDITY;
+import static com.ifsc.julio.javatcc.util.Const.TEMPERATURE;
+import static java.time.temporal.ChronoUnit.YEARS;
 
-@RestController
-@RequestMapping("/things-board")
-public class ThingsBoardController {
+@Component
+public class DataInitializer {
+
+    @Autowired
+    private StationService stationService;
 
     @Autowired
     private DeviceTelemetryService deviceTelemetryService;
@@ -36,16 +38,7 @@ public class ThingsBoardController {
     @Autowired
     private DeviceTelemetryDayService deviceTelemetryDayService;
 
-    @Autowired
-    private EmailService emailService;
-
-    @GetMapping
-    public List<DeviceTelemetryEntity> list() {
-        return deviceTelemetryService.findAll();
-    }
-
-    @PostMapping
-    public void teste() {
+    private void teste(StationEntity station) {
         LocalDateTime start = LocalDateTime.now().minus(2, YEARS);
         LocalDateTime end = LocalDateTime.now();
         List<String> keys = Arrays.asList(TEMPERATURE, HUMIDITY);
@@ -73,6 +66,7 @@ public class ThingsBoardController {
                     .date(device.getDay())
                     .value(device.getAverage())
                     .key(device.getKey())
+                    .station(station)
                     .build();
 
             entities.add(deviceTelemetryDayEntity);
@@ -84,11 +78,16 @@ public class ThingsBoardController {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    @PostMapping("email")
-    public void email() {
-        String destinatario = "julio.bp25@aluno.ifsc.edu.br";
-        String assunto = "Teste Envio de email";
-        String mensagem = "Olá";
-        emailService.enviarEmail(destinatario, assunto, mensagem);
+    @PostConstruct
+    public void initStation() {
+        StationEntity station = stationService.save(StationDTO.builder()
+                .uf("SC")
+                .city("Tubarão")
+                .address("IFSC")
+                .date(new Date())
+                .email("julio.bp25@aluno.ifsc.edu.br")
+                .phone("48991455898")
+                .build());
+        teste(station);
     }
 }

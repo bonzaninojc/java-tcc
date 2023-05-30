@@ -18,4 +18,8 @@ public class DeviceTelemetryEntity {
     private String key;
     private Date date;
     private Double value;
+
+    @ManyToOne
+    @JoinColumn(name = "id_station")
+    private StationEntity station;
 }

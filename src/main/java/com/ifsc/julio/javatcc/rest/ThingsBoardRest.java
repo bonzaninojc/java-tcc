@@ -90,7 +90,7 @@ public class ThingsBoardRest {
         return duration.toMinutes() > 59;
     }
 
-    public String getTokenWithUserCredentials() {
+    private String getTokenWithUserCredentials() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

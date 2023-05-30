@@ -7,6 +7,7 @@ import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DeviceTelemetryServiceImpl implements DeviceTelemetryService {
@@ -32,5 +33,10 @@ public class DeviceTelemetryServiceImpl implements DeviceTelemetryService {
     @Override
     public List<DeviceTelemetryDayDTO> getDayAverage(AverageDTO dto) {
         return deviceTelemetryRepository.getDayAverage(dto);
+    }
+
+    @Override
+    public boolean hasPassedThreeHoursSinceLimitDate(UUID station) {
+        return deviceTelemetryRepository.hasPassedThreeHoursSinceLimitDate(station);
     }
 }
