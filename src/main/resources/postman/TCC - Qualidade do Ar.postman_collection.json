@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "1ee5ecd9-f305-4f87-afb5-8b0a7c22c4ad",
+		"name": "TCC - Qualidade do Ar",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21757039",
+		"_collection_link": "https://dark-star-234444.postman.co/workspace/Pessoal~397d4673-6bc1-474d-8981-b430501ee45c/collection/21757039-1ee5ecd9-f305-4f87-afb5-8b0a7c22c4ad?action=share&creator=21757039&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Thingsboard",
+			"item": [
+				{
+					"name": "dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIiwic2NvcGVzIjpbIlRFTkFOVF9BRE1JTiJdLCJ1c2VySWQiOiIwYzJjOTFiMC1kYWM2LTExZWMtODdhMi00Mzk2YTYzZTBlZmUiLCJlbmFibGVkIjp0cnVlLCJpc1B1YmxpYyI6ZmFsc2UsInRlbmFudElkIjoiMGJkMGRkMjAtZGFjNi0xMWVjLTg3YTItNDM5NmE2M2UwZWZlIiwiY3VzdG9tZXJJZCI6IjEzODE0MDAwLTFkZDItMTFiMi04MDgwLTgwODA4MDgwODA4MCIsImlzcyI6InRoaW5nc2JvYXJkLmlvIiwiaWF0IjoxNjc5NTIxMzg5LCJleHAiOjE2Nzk1MzAzODl9.s68wDqJQRUVVYlHW9-npHAuSXUdYehBbYuz0l4ZUmGayzavplJLLiDM7ZJ7wdQHCwbpBn5rGDKq1usVd2E_BCg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://172.16.115.3:8080/api/dashboard/7e876d10-db94-11ec-be5e-c7e0ee12d6e7",
+							"protocol": "http",
+							"host": [
+								"172",
+								"16",
+								"115",
+								"3"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"dashboard",
+								"7e876d10-db94-11ec-be5e-c7e0ee12d6e7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "telemetry",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIiwic2NvcGVzIjpbIlRFTkFOVF9BRE1JTiJdLCJ1c2VySWQiOiIwYzJjOTFiMC1kYWM2LTExZWMtODdhMi00Mzk2YTYzZTBlZmUiLCJlbmFibGVkIjp0cnVlLCJpc1B1YmxpYyI6ZmFsc2UsInRlbmFudElkIjoiMGJkMGRkMjAtZGFjNi0xMWVjLTg3YTItNDM5NmE2M2UwZWZlIiwiY3VzdG9tZXJJZCI6IjEzODE0MDAwLTFkZDItMTFiMi04MDgwLTgwODA4MDgwODA4MCIsImlzcyI6InRoaW5nc2JvYXJkLmlvIiwiaWF0IjoxNjc5NTMxMzE3LCJleHAiOjE2Nzk1NDAzMTd9.-IWCcxKCupieadRwH5twEKC2YRk7EFDdHgA1PjUhaV5THbfK18pzm0JQe8kkIC1XkAKafNb1x1E3qIK7eteIcA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://172.16.115.3:8080/api/plugins/telemetry/DEVICE/29835b80-db94-11ec-be5e-c7e0ee12d6e7/values/timeseries?keys=temperature&startTs=1647995831435&endTs=1679531831435",
+							"protocol": "http",
+							"host": [
+								"172",
+								"16",
+								"115",
+								"3"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"plugins",
+								"telemetry",
+								"DEVICE",
+								"29835b80-db94-11ec-be5e-c7e0ee12d6e7",
+								"values",
+								"timeseries"
+							],
+							"query": [
+								{
+									"key": "keys",
+									"value": "temperature"
+								},
+								{
+									"key": "startTs",
+									"value": "1647995831435"
+								},
+								{
+									"key": "endTs",
+									"value": "1679531831435"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Station",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uf\" : \"SC\",\n    \"city\": \"Tubarão\",\n    \"address\": \"Rua Santos Dumont\",\n    \"email\": \"brigido.viniciuss@gmail.com\",\n    \"phone\": \"48984840861\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/station/save",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"station",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"1cc5b33d-298f-4621-b512-4cf95e23a517\",\n    \"uf\" : \"SC\",\n    \"city\": \"Tubarão\",\n    \"address\": \"Rua Santos Dumont\",\n    \"email\": \"brigido.viniciuss@gmail.com\",\n    \"phone\": \"48984840861\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/station/u",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"station",
+								"u"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/station",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"station"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "disable",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"stationId\": \"1cc5b33d-298f-4621-b512-4cf95e23a517\",\n    \"disabled\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/station/disable",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"station",
+								"disable"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
