@@ -44,9 +44,9 @@ public class CheckStationDataSchedule {
 
             String text = getText(station);
             sendEmailOwner(text);
-            sendWhatsAppMessageOwner(text);
             sendEmailStationGuardian(station.getEmail(), text);
-            sendWhatsAppMessageStationGuardian(station.getPhone(), text);
+//            sendWhatsAppMessageOwner(text);
+//            sendWhatsAppMessageStationGuardian(station.getPhone(), text);
             saveHistoryEmail(station, text);
         });
     }

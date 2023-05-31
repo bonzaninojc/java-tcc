@@ -73,6 +73,11 @@
             <artifactId>json</artifactId>
             <version>20210307</version>
         </dependency>
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>8.14.0</version>
+        </dependency>
     </dependencies>
 
     <build>
