@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import static com.ifsc.julio.javatcc.util.Const.REQUESTS_DEFAULT;
 import static java.util.Objects.*;
 
 @Service
@@ -26,6 +27,9 @@ public class StationServiceImpl implements StationService {
     public StationEntity save(StationDTO stationDTO) {
         StationEntity stationEntity = modelMapper.map(stationDTO, StationEntity.class);
         stationEntity.setDate(new Date());
+        if (isNull(stationEntity.getRequestsPerDay())) {
+            stationEntity.setRequestsPerDay(REQUESTS_DEFAULT);
+        }
         return stationRepository.save(stationEntity);
     }
 

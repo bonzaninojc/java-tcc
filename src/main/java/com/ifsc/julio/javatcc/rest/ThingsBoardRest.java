@@ -38,6 +38,11 @@ public class ThingsBoardRest {
     private Gson gson;
 
     public void saveTelemetry(DeviceSearchDTO deviceSearch) {
+        DeviceTelemetryDTO deviceTelemetryDTO = getDeviceTelemetryDTO(deviceSearch);
+        saveTelemetry(deviceTelemetryDTO);
+    }
+
+    private DeviceTelemetryDTO getDeviceTelemetryDTO(DeviceSearchDTO deviceSearch) {
         RestTemplate restTemplate = new RestTemplate();
 
         URI uri = UriComponentsBuilder.fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
@@ -56,8 +61,7 @@ public class ThingsBoardRest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(uri, GET, entity, String.class);
         String responseBody = responseEntity.getBody();
 
-        DeviceTelemetryDTO deviceTelemetry = gson.fromJson(responseBody, DeviceTelemetryDTO.class);
-        saveTelemetry(deviceTelemetry);
+        return gson.fromJson(responseBody, DeviceTelemetryDTO.class);
     }
 
     private void saveTelemetry(DeviceTelemetryDTO deviceTelemetry) {

@@ -30,7 +30,6 @@ public class ThingsBoardHourSchedule {
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
                 .start(averageDTO.getInitDate())
                 .end(averageDTO.getFinalDate())
-                //TODO - Pegar keys validas
                 .keys(List.of(TEMPERATURE))
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);

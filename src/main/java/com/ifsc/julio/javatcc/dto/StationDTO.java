@@ -16,4 +16,5 @@ public class StationDTO {
     private String email;
     private String phone;
     private boolean disabled;
+    private Integer requestsPerDay;
 }

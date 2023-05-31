@@ -8,6 +8,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 import java.util.Date;
 import java.util.UUID;
+import static com.ifsc.julio.javatcc.util.Const.*;
+import static java.util.Optional.*;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
@@ -27,6 +29,7 @@ public class StationEntity {
     private String email;
     private String phone;
     private boolean disabled;
+    private Integer requestsPerDay;
 
     public void update(StationDTO stationDTO) {
         uf = stationDTO.getUf();
@@ -34,5 +37,6 @@ public class StationEntity {
         address = stationDTO.getAddress();
         email = stationDTO.getEmail();
         phone = stationDTO.getPhone();
+        requestsPerDay = ofNullable(stationDTO.getRequestsPerDay()).orElse(REQUESTS_DEFAULT);
     }
 }

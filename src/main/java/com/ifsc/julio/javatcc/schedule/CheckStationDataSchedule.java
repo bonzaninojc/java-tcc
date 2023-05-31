@@ -14,14 +14,13 @@ import static java.util.Objects.*;
 public class CheckStationDataSchedule {
 
     private static final String OWNER_EMAIL = "julio.bp25@aluno.ifsc.edu.br";
-    private static final String OWNER_PHONE = "+5548991455898";
     private static final String SUBJECT_EMAIL = "Estação com mal funcionamento";
 
     @Autowired
     private StationService stationService;
 
     @Autowired
-    private DeviceTelemetryService deviceTelemetryService;
+    private DeviceTelemetryHourService deviceTelemetryHourService;
 
     @Autowired
     private HistoryEmailService historyEmailService;
@@ -38,15 +37,13 @@ public class CheckStationDataSchedule {
         List<StationEntity> stations = stationService.findAll();
 
         stations.forEach(station -> {
-            if (station.isDisabled() || !deviceTelemetryService.hasPassedThreeHoursSinceLimitDate(station.getId())) {
+            if (station.isDisabled() || !deviceTelemetryHourService.hasPassedThreeHoursSinceLimitDate(station.getId())) {
                 return;
             }
 
             String text = getText(station);
             sendEmailOwner(text);
             sendEmailStationGuardian(station.getEmail(), text);
-//            sendWhatsAppMessageOwner(text);
-//            sendWhatsAppMessageStationGuardian(station.getPhone(), text);
             saveHistoryEmail(station, text);
         });
     }
@@ -55,22 +52,11 @@ public class CheckStationDataSchedule {
         emailService.sendEmail(OWNER_EMAIL, SUBJECT_EMAIL, text);
     }
 
-    private void sendWhatsAppMessageOwner(String text) {
-        whatsAppService.sendMessage(OWNER_PHONE, text);
-    }
-
     private void sendEmailStationGuardian(String email, String text) {
         if (isNull(email)) {
             return;
         }
         emailService.sendEmail(email, SUBJECT_EMAIL, text);
-    }
-
-    private void sendWhatsAppMessageStationGuardian(String phone, String text) {
-        if (isNull(phone)) {
-            return;
-        }
-        whatsAppService.sendMessage(phone, text);
     }
 
     private void saveHistoryEmail(StationEntity station, String text) {
@@ -82,7 +68,6 @@ public class CheckStationDataSchedule {
     }
 
     private String getText(StationEntity station) {
-        //TODO - Verificar mensagem
         StringBuilder text = new StringBuilder();
         text.append("Prezado(a),\n\n")
             .append("Favor verificar se a estação localizada no(a) ")

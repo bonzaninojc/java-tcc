@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import static com.ifsc.julio.javatcc.util.Const.HUMIDITY;
-import static com.ifsc.julio.javatcc.util.Const.TEMPERATURE;
+import static com.ifsc.julio.javatcc.util.Const.*;
 import static java.time.temporal.ChronoUnit.YEARS;
 
 @Component
@@ -87,6 +86,7 @@ public class DataInitializer {
                 .date(new Date())
                 .email("julio.bp25@aluno.ifsc.edu.br")
                 .phone("48991455898")
+                .requestsPerDay(REQUESTS_DEFAULT)
                 .build());
         teste(station);
     }
