@@ -26,7 +26,7 @@ public class DeviceTelemetryHourServiceImpl implements DeviceTelemetryHourServic
     }
 
     @Override
-    public Integer countByDate(Date date) {
-        return deviceTelemetryHourRepository.countByDate(date);
+    public Integer countByDate(Date date, UUID stationId) {
+        return deviceTelemetryHourRepository.countByDate(date, stationId);
     }
 }

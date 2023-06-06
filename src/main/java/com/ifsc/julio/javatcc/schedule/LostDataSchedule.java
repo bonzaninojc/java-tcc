@@ -37,10 +37,10 @@ public class LostDataSchedule {
     public void lostDataSchedule() {
         List<StationEntity> stations = stationService.findAll();
         //TODO - Validar Data Limite do agendamento
-        Date limitDate = new Date();
+        Date date = new Date();
         stations.forEach(station -> {
             findLostData(station);
-            validateRequests(station, limitDate);
+            validateRequests(station, date);
         });
     }
 
@@ -57,20 +57,24 @@ public class LostDataSchedule {
 
             thingsBoardRest.saveTelemetry(deviceSearch);
 
-            if (station.getRequestsPerDay().equals(deviceTelemetryHourService.countByDate(lostData.getDate()))) {
+            if (isRequestsPerDayValid(station, lostData.getDate())) {
                 lostDataService.delete(lostData);
             }
         });
     }
 
-    private void validateRequests(StationEntity station, Date limitDate) {
-        if (station.getRequestsPerDay().equals(deviceTelemetryHourService.countByDate(limitDate))) {
+    private void validateRequests(StationEntity station, Date date) {
+        if (isRequestsPerDayValid(station, date)) {
             return;
         }
         lostDataService.save(
                 LostDataEntity.builder()
-                    .date(new Date())
+                    .date(date)
                     .station(station)
                     .build());
+    }
+
+    private boolean isRequestsPerDayValid(StationEntity station, Date date) {
+        return station.getRequestsPerDay().equals(deviceTelemetryHourService.countByDate(date, station.getId()));
     }
 }

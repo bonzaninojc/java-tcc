@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface DeviceTelemetryHourService {
     void saveAll(List<DeviceTelemetryHourEntity> entities);
     boolean hasPassedThreeHoursSinceLimitDate(UUID station);
-    Integer countByDate(Date date);
+    Integer countByDate(Date date, UUID stationId);
 }
