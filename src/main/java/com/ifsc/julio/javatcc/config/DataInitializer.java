@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import static com.ifsc.julio.javatcc.util.Const.*;
@@ -40,17 +39,16 @@ public class DataInitializer {
     private void teste(StationEntity station) {
         LocalDateTime start = LocalDateTime.now().minus(2, YEARS);
         LocalDateTime end = LocalDateTime.now();
-        List<String> keys = Arrays.asList(TEMPERATURE, HUMIDITY);
 
         DeviceSearchDTO deviceSearch = DeviceSearchDTO.builder()
                 .end(localDateTimeToDate(end))
                 .start(localDateTimeToDate(start))
-                .keys(keys)
+                .keys(KEYS)
                 .build();
         thingsBoardRest.saveTelemetry(deviceSearch);
 
         List<DeviceTelemetryDayDTO> devices = new ArrayList<>();
-        keys.forEach(key -> {
+        KEYS.forEach(key -> {
             devices.addAll(deviceTelemetryService.getDayAverage(
                     AverageDTO.builder()
                             .initDate(localDateTimeToDate(start))

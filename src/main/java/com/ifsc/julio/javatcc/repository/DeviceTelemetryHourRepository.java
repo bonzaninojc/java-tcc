@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface DeviceTelemetryHourRepository extends JpaRepository<DeviceTelemetryHourEntity, UUID>, DeviceTelemetryHourRepositoryCustom {
 
-    @Query(value = "SELECT COUNT(*) FROM device_telemetry_hour_entity WHERE date = :dateParam", nativeQuery = true)
-    Integer countByDate(@Param("dateParam") Date date);
+    @Query(value = "SELECT COUNT(*) FROM device_telemetry_hour_entity WHERE date = :date", nativeQuery = true)
+    Integer countByDate(@Param("date") Date date);
 }

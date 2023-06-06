@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.ifsc.julio.javatcc.dto.*;
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
+import com.ifsc.julio.javatcc.service.StationService;
 import com.ifsc.julio.javatcc.util.ThingsBoardUtil;
 import java.net.URI;
 import java.time.Duration;
@@ -16,7 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import static com.ifsc.julio.javatcc.util.Const.*;
 import static java.lang.String.*;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Component
@@ -30,6 +33,9 @@ public class ThingsBoardRest {
 
     @Autowired
     private DeviceTelemetryService deviceTelemetryService;
+
+    @Autowired
+    private StationService stationService;
 
     @Autowired
     private ThingsBoardUtil thingsBoardUtil;
@@ -61,7 +67,27 @@ public class ThingsBoardRest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(uri, GET, entity, String.class);
         String responseBody = responseEntity.getBody();
 
-        return gson.fromJson(responseBody, DeviceTelemetryDTO.class);
+        DeviceTelemetryDTO deviceTelemetryDTO = gson.fromJson(responseBody, DeviceTelemetryDTO.class);
+        if (isNull(deviceSearch.getStationId())) {
+            return deviceTelemetryDTO;
+        }
+        return getDeviceTelemetryDTOPerStation(deviceTelemetryDTO, deviceSearch.getStationId());
+    }
+
+    private DeviceTelemetryDTO getDeviceTelemetryDTOPerStation(DeviceTelemetryDTO deviceTelemetryDTO, UUID stationId) {
+        List<TelemetryValueDTO> filteredTemperature = filterTelemetryByStation(deviceTelemetryDTO.getTemperature(), stationId);
+        deviceTelemetryDTO.setTemperature(filteredTemperature);
+
+        List<TelemetryValueDTO> filteredHumidity = filterTelemetryByStation(deviceTelemetryDTO.getHumidity(), stationId);
+        deviceTelemetryDTO.setHumidity(filteredHumidity);
+
+        return deviceTelemetryDTO;
+    }
+
+    private List<TelemetryValueDTO> filterTelemetryByStation(List<TelemetryValueDTO> telemetryList, UUID stationId) {
+        return telemetryList.stream()
+                .filter(telemetry -> telemetry.getStationUUID().equals(stationId))
+                .collect(toList());
     }
 
     private void saveTelemetry(DeviceTelemetryDTO deviceTelemetry) {
@@ -74,6 +100,7 @@ public class ThingsBoardRest {
                 telemetryEntity.setKey(key);
                 telemetryEntity.setDate(new Date(telemetryValue.getTs()));
                 telemetryEntity.setValue(telemetryValue.getValue());
+                telemetryEntity.setStation(stationService.findById(telemetryValue.getStationUUID()));
                 entities.add(telemetryEntity);
             }
         });

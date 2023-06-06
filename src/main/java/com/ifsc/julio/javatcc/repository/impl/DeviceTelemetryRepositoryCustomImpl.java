@@ -14,17 +14,17 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
 
     @Override
     public List<DeviceTelemetryHourDTO> getHourAverage(AverageDTO dto) {
-        StringBuilder jpql = new StringBuilder();
-        jpql.append(" SELECT ")
-            .append("      AVG(value) AS average, ")
-            .append("      DATE_TRUNC('hour', date) AS hour, ")
-            .append("      key AS key ")
-            .append(" FROM device_telemetry ")
-            .append(" WHERE date BETWEEN :initDate AND :finalDate ")
-            .append(" AND key = :key ")
-            .append(" GROUP BY hour, key ");
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ")
+           .append("      AVG(value) AS average, ")
+           .append("      DATE_TRUNC('hour', date) AS hour, ")
+           .append("      key AS key ")
+           .append(" FROM device_telemetry ")
+           .append(" WHERE date BETWEEN :initDate AND :finalDate ")
+           .append(" AND key = :key ")
+           .append(" GROUP BY hour, key ");
 
-        List<Tuple> results = em.createNativeQuery(jpql.toString(), Tuple.class)
+        List<Tuple> results = em.createNativeQuery(sql.toString(), Tuple.class)
                 .setParameter("initDate", dto.getInitDate())
                 .setParameter("finalDate", dto.getFinalDate())
                 .setParameter("key", dto.getKey())
@@ -44,17 +44,17 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
 
     @Override
     public List<DeviceTelemetryDayDTO> getDayAverage(AverageDTO dto) {
-        StringBuilder jpql = new StringBuilder();
-        jpql.append(" SELECT ")
-            .append("      AVG(value) AS average, ")
-            .append("      DATE_TRUNC('day', date) AS day, ")
-            .append("      key AS key ")
-            .append(" FROM device_telemetry ")
-            .append(" WHERE date BETWEEN :initDate AND :finalDate ")
-            .append(" AND key = :key ")
-            .append(" GROUP BY day, key ");
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ")
+           .append("      AVG(value) AS average, ")
+           .append("      DATE_TRUNC('day', date) AS day, ")
+           .append("      key AS key ")
+           .append(" FROM device_telemetry ")
+           .append(" WHERE date BETWEEN :initDate AND :finalDate ")
+           .append(" AND key = :key ")
+           .append(" GROUP BY day, key ");
 
-        List<Tuple> results = em.createNativeQuery(jpql.toString(), Tuple.class)
+        List<Tuple> results = em.createNativeQuery(sql.toString(), Tuple.class)
                 .setParameter("initDate", dto.getInitDate())
                 .setParameter("finalDate", dto.getFinalDate())
                 .setParameter("key", dto.getKey())

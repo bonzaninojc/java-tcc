@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import static com.ifsc.julio.javatcc.util.Const.REQUESTS_DEFAULT;
 import static java.util.Objects.*;
 
@@ -66,6 +67,11 @@ public class StationServiceImpl implements StationService {
         stationRepository.saveAll(stations.stream()
                 .map(station -> modelMapper.map(station, StationEntity.class))
                 .toList());
+    }
+
+    @Override
+    public StationEntity findById(UUID stationId) {
+        return stationRepository.findById(stationId).orElse(null);
     }
 
     @Override

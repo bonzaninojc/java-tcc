@@ -1,9 +1,6 @@
 package com.ifsc.julio.javatcc.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
 import java.util.UUID;
@@ -20,4 +17,8 @@ public class LostDataEntity {
     private UUID id;
 
     private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "id_station")
+    private StationEntity station;
 }

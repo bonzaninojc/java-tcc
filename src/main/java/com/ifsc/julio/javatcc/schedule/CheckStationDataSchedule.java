@@ -67,6 +67,7 @@ public class CheckStationDataSchedule {
                 .build());
     }
 
+    //TODO - Validar texto de envio
     private String getText(StationEntity station) {
         StringBuilder text = new StringBuilder();
         text.append("Prezado(a),\n\n")
