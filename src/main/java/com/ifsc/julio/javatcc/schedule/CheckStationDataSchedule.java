@@ -4,12 +4,14 @@ import com.ifsc.julio.javatcc.entity.HistoryEmailEntity;
 import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import static java.util.Objects.*;
 
-//@EnableScheduling
+@EnableScheduling
 @Component
 public class CheckStationDataSchedule {
 
@@ -32,7 +34,7 @@ public class CheckStationDataSchedule {
     private WhatsAppService whatsAppService;
 
     //TODO - Validar tempo do agendamento
-//    @Scheduled(cron = "0 0 0,5 * * *")
+    @Scheduled(cron = "0 0 0,5 * * *")
     public void checkStationDataSchedule() {
         List<StationEntity> stations = stationService.findAll();
 

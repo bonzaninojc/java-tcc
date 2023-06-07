@@ -12,6 +12,7 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
     @PersistenceContext
     private EntityManager em;
 
+    //TODO - Juntar metodos
     @Override
     public List<DeviceTelemetryHourDTO> getHourAverage(AverageDTO dto) {
         StringBuilder sql = new StringBuilder();

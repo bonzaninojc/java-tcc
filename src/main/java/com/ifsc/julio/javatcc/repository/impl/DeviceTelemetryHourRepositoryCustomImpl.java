@@ -17,10 +17,10 @@ public class DeviceTelemetryHourRepositoryCustomImpl implements DeviceTelemetryH
         Date limitDate = getLimitDate();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT  ")
-                .append("    COUNT(*) ")
-                .append(" FROM device_telemetry_hour ")
-                .append(" WHERE date >= :limitDate ")
-                .append(" AND device_telemetry_hour.id_station = :station ");
+           .append("    COUNT(*) ")
+           .append(" FROM device_telemetry_hour ")
+           .append(" WHERE date >= :limitDate ")
+           .append(" AND device_telemetry_hour.id_station = :station ");
 
         Long count = (Long) em.createNativeQuery(sql.toString())
                 .setParameter("limitDate", limitDate)

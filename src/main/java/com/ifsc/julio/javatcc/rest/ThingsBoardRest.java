@@ -14,19 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 import static com.ifsc.julio.javatcc.util.Const.*;
 import static java.lang.String.*;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.*;
 import static org.springframework.http.HttpMethod.*;
+import static org.springframework.web.util.UriComponentsBuilder.*;
 
 @Component
 public class ThingsBoardRest {
-
-    private static final String LOGIN_ENDPOINT = "%s/api/auth/login";
-    private static final String DEVICE_ENDPOINT = "%s/api/plugins/telemetry/DEVICE/%s/values/timeseries";
 
     private String tokenTemp;
     private LocalDateTime localDateTimeToken;
@@ -50,28 +47,32 @@ public class ThingsBoardRest {
 
     private DeviceTelemetryDTO getDeviceTelemetryDTO(DeviceSearchDTO deviceSearch) {
         RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange(getUri(deviceSearch), GET, getRequestEntity(), String.class);
+        String responseBody = responseEntity.getBody();
 
-        URI uri = UriComponentsBuilder.fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
+        DeviceTelemetryDTO deviceTelemetryDTO = gson.fromJson(responseBody, DeviceTelemetryDTO.class);
+
+        if (isNull(deviceSearch.getStationId())) {
+            return deviceTelemetryDTO;
+        }
+        return getDeviceTelemetryDTOPerStation(deviceTelemetryDTO, deviceSearch.getStationId());
+    }
+
+    private HttpEntity<?> getRequestEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-Authorization", getToken());
+
+        return new HttpEntity<>(null, headers);
+    }
+
+    private URI getUri(DeviceSearchDTO deviceSearch) {
+        return fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
                 .queryParam("keys", deviceSearch.getKeysString())
                 .queryParam("startTs", deviceSearch.getStartMiliseconds())
                 .queryParam("endTs", deviceSearch.getEndMiliseconds())
                 .queryParam("limit", REGISTER_LIMIT)
                 .build()
                 .toUri();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("x-Authorization", getToken());
-
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, GET, entity, String.class);
-        String responseBody = responseEntity.getBody();
-
-        DeviceTelemetryDTO deviceTelemetryDTO = gson.fromJson(responseBody, DeviceTelemetryDTO.class);
-        if (isNull(deviceSearch.getStationId())) {
-            return deviceTelemetryDTO;
-        }
-        return getDeviceTelemetryDTOPerStation(deviceTelemetryDTO, deviceSearch.getStationId());
     }
 
     private DeviceTelemetryDTO getDeviceTelemetryDTOPerStation(DeviceTelemetryDTO deviceTelemetryDTO, UUID stationId) {
@@ -111,9 +112,13 @@ public class ThingsBoardRest {
         if (nonNull(tokenTemp) && !isTokenExpired()) {
             return tokenTemp;
         }
+        refreshAuthToken();
+        return tokenTemp;
+    }
+
+    private void refreshAuthToken() {
         localDateTimeToken = LocalDateTime.now();
         tokenTemp = format("Bearer %s", getTokenWithUserCredentials());
-        return tokenTemp;
     }
 
     private boolean isTokenExpired() {
@@ -123,14 +128,18 @@ public class ThingsBoardRest {
 
     private String getTokenWithUserCredentials() {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> request = new HttpEntity<>(getLogin(), headers);
+        HttpEntity<String> request = new HttpEntity<>(getLogin(), getTokenHeader());
         ResponseEntity<TokenDTO> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, TokenDTO.class);
 
         TokenDTO tokenDTO = response.getBody();
         return tokenDTO.getToken();
+    }
+
+    private HttpHeaders getTokenHeader() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return headers;
     }
 
     private String getLogin() {

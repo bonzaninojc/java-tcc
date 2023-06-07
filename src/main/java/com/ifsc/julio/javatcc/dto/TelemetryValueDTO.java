@@ -2,6 +2,7 @@ package com.ifsc.julio.javatcc.dto;
 
 import lombok.*;
 import java.util.UUID;
+import static java.util.Objects.*;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
@@ -12,6 +13,6 @@ public class TelemetryValueDTO {
     private String stationId;
 
     public UUID getStationUUID() {
-        return UUID.fromString(stationId);
+        return nonNull(stationId) ? UUID.fromString(stationId) : null;
     }
 }
