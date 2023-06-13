@@ -4,9 +4,11 @@ import com.ifsc.julio.javatcc.entity.LostDataEntity;
 import com.ifsc.julio.javatcc.repository.LostDataRepository;
 import com.ifsc.julio.javatcc.service.LostDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class LostDataServiceImpl implements LostDataService {
 
     @Autowired
