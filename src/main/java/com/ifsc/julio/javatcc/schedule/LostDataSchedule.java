@@ -36,7 +36,6 @@ public class LostDataSchedule {
     @Scheduled(cron = "0 0 0,5 * * *")
     public void lostDataSchedule() {
         List<StationEntity> stations = stationService.findAll();
-        //TODO - Validar Data Limite do agendamento
         Date date = new Date();
         stations.forEach(station -> {
             findLostData(station);
