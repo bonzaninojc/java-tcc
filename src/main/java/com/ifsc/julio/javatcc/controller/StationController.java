@@ -3,6 +3,8 @@ package com.ifsc.julio.javatcc.controller;
 import com.ifsc.julio.javatcc.dto.DisableStationDTO;
 import com.ifsc.julio.javatcc.dto.StationDTO;
 import com.ifsc.julio.javatcc.service.StationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import static java.util.stream.Collectors.*;
 
 @RestController
 @RequestMapping("/station")
+@Tag(name = "Estação")
 public class StationController {
 
     @Autowired
@@ -19,10 +22,9 @@ public class StationController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("teste")
-    public void teste() {
-    }
-
+    @Operation(
+        description = "Método para gerar novas estações. Após executá-lo, pegar o UUID gerado e configurar na estação localmente."
+    )
     @PostMapping("save")
     public StationDTO save(@RequestBody StationDTO stationDTO) {
         return modelMapper.map(stationService.save(stationDTO), StationDTO.class);
