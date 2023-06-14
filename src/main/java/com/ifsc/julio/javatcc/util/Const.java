@@ -19,5 +19,5 @@ public class Const {
 
     public static final Integer REQUESTS_DEFAULT = 144;
 
-    public static final List<String> KEYS = Arrays.asList(TEMPERATURE, HUMIDITY);
+    protected static final List<String> KEYS = Arrays.asList(TEMPERATURE, HUMIDITY);
 }

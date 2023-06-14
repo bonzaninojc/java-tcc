@@ -93,7 +93,7 @@ public class ThingsBoardRest {
 
     private void saveTelemetry(DeviceTelemetryDTO deviceTelemetry) {
         List<DeviceTelemetryEntity> entities = new ArrayList<>();
-        HashMap<String, List<TelemetryValueDTO>> devices = deviceTelemetry.getDevices();
+        Map<String, List<TelemetryValueDTO>> devices = deviceTelemetry.getDevices();
 
         devices.forEach((key, list) -> {
             for (TelemetryValueDTO telemetryValue : list) {
@@ -132,6 +132,7 @@ public class ThingsBoardRest {
         ResponseEntity<TokenDTO> response = restTemplate.exchange(format(LOGIN_ENDPOINT, thingsBoardUtil.getUrl()), POST, request, TokenDTO.class);
 
         TokenDTO tokenDTO = response.getBody();
+        assert tokenDTO != null;
         return tokenDTO.getToken();
     }
 

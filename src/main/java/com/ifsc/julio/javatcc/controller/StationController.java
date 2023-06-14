@@ -2,6 +2,7 @@ package com.ifsc.julio.javatcc.controller;
 
 import com.ifsc.julio.javatcc.dto.DisableStationDTO;
 import com.ifsc.julio.javatcc.dto.StationDTO;
+import com.ifsc.julio.javatcc.exception.StationException;
 import com.ifsc.julio.javatcc.service.StationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,12 +32,12 @@ public class StationController {
     }
 
     @PutMapping("/update")
-    public StationDTO update(@RequestBody StationDTO stationDTO) {
+    public StationDTO update(@RequestBody StationDTO stationDTO) throws StationException {
         return modelMapper.map(stationService.update(stationDTO), StationDTO.class);
     }
 
     @PutMapping("/disable")
-    public void disable(@RequestBody DisableStationDTO disableStationDTO) {
+    public void disable(@RequestBody DisableStationDTO disableStationDTO) throws StationException {
        stationService.disable(disableStationDTO);
     }
 

@@ -32,14 +32,13 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
                 .getResultList();
 
         List<DeviceTelemetryHourDTO> devices = new ArrayList<>();
-        results.forEach(device -> {
+        results.forEach(device ->
             devices.add(DeviceTelemetryHourDTO.builder()
                     .average((Double) device.get("average"))
                     .key((String) device.get("key"))
                     .hour((Date) device.get("hour"))
-                    .build());
-        });
-
+                    .build())
+        );
         return devices;
     }
 
@@ -62,14 +61,13 @@ public class DeviceTelemetryRepositoryCustomImpl implements DeviceTelemetryRepos
                 .getResultList();
 
         List<DeviceTelemetryDayDTO> devices = new ArrayList<>();
-        results.forEach(device -> {
+        results.forEach(device ->
             devices.add(DeviceTelemetryDayDTO.builder()
                     .average((Double) device.get("average"))
                     .key((String) device.get("key"))
                     .day((Date) device.get("day"))
-                    .build());
-        });
-
+                    .build())
+        );
         return devices;
     }
 }
