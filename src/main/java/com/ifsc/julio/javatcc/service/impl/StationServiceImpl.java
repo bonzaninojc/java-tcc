@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import static com.ifsc.julio.javatcc.util.Const.REQUESTS_DEFAULT;
 import static java.util.Objects.*;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class StationServiceImpl implements StationService {
@@ -26,17 +27,17 @@ public class StationServiceImpl implements StationService {
     private ModelMapper modelMapper;
 
     @Override
-    public StationEntity save(StationDTO stationDTO) {
+    public StationDTO save(StationDTO stationDTO) {
         StationEntity stationEntity = modelMapper.map(stationDTO, StationEntity.class);
         stationEntity.setDate(new Date());
         if (isNull(stationEntity.getRequestsPerDay())) {
             stationEntity.setRequestsPerDay(REQUESTS_DEFAULT);
         }
-        return stationRepository.save(stationEntity);
+        return modelMapper.map(stationRepository.save(stationEntity), StationDTO.class);
     }
 
     @Override
-    public StationEntity update(StationDTO stationDTO) throws StationException {
+    public StationDTO update(StationDTO stationDTO) throws StationException {
         if (isNull(stationDTO.getId())) {
             throw new StationException("Identificador da Estação não informado.");
         }
@@ -46,7 +47,7 @@ public class StationServiceImpl implements StationService {
         }
         StationEntity stationEntity = stationEntityOptional.get();
         stationEntity.update(stationDTO);
-        return stationRepository.save(stationEntity);
+        return modelMapper.map(stationRepository.save(stationEntity), StationDTO.class);
     }
 
     @Override
@@ -76,7 +77,10 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public List<StationEntity> findAll() {
-        return stationRepository.findAll();
+    public List<StationDTO> findAll() {
+        return stationRepository.findAll()
+                .stream()
+                .map(station -> modelMapper.map(station, StationDTO.class))
+                .collect(toList());
     }
 }

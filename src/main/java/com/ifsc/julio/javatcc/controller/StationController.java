@@ -10,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import static java.util.stream.Collectors.*;
 
 @RestController
 @RequestMapping("/station")
@@ -28,12 +27,12 @@ public class StationController {
     )
     @PostMapping("save")
     public StationDTO save(@RequestBody StationDTO stationDTO) {
-        return modelMapper.map(stationService.save(stationDTO), StationDTO.class);
+        return stationService.save(stationDTO);
     }
 
     @PutMapping("/update")
     public StationDTO update(@RequestBody StationDTO stationDTO) throws StationException {
-        return modelMapper.map(stationService.update(stationDTO), StationDTO.class);
+        return stationService.update(stationDTO);
     }
 
     @PutMapping("/disable")
@@ -43,9 +42,6 @@ public class StationController {
 
     @GetMapping
     public List<StationDTO> findAll() {
-        return stationService.findAll()
-                .stream()
-                .map(station -> modelMapper.map(station, StationDTO.class))
-                .collect(toList());
+        return stationService.findAll();
     }
 }

@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public interface StationService {
 
-    StationEntity save(StationDTO stationDTO);
-    StationEntity update(StationDTO stationDTO) throws StationException;
+    StationDTO save(StationDTO stationDTO);
+    StationDTO update(StationDTO stationDTO) throws StationException;
     void saveAll(List<StationDTO> stations);
     StationEntity findById(UUID stationId);
-    List<StationEntity> findAll();
+    List<StationDTO> findAll();
     void disable(DisableStationDTO disableStationDTO) throws StationException;
 }
