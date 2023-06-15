@@ -2,7 +2,6 @@ package com.ifsc.julio.javatcc.station;
 
 import com.ifsc.julio.javatcc.BaseTests;
 import com.ifsc.julio.javatcc.dto.StationDTO;
-import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.service.StationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,7 @@ public class StationServiceTests extends BaseTests {
 
     @Test
     public void stationNonNullTest() {
-        StationEntity station = stationService.save(StationDTO.builder()
+        StationDTO station = stationService.save(StationDTO.builder()
                 .uf("SC")
                 .city("Tubarão")
                 .address("IFSC")

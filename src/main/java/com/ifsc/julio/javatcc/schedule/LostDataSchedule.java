@@ -1,8 +1,8 @@
 package com.ifsc.julio.javatcc.schedule;
 
 import com.ifsc.julio.javatcc.dto.DeviceSearchDTO;
+import com.ifsc.julio.javatcc.dto.StationDTO;
 import com.ifsc.julio.javatcc.entity.LostDataEntity;
-import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.rest.ThingsBoardRest;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryHourService;
 import com.ifsc.julio.javatcc.service.LostDataService;
@@ -35,7 +35,7 @@ public class LostDataSchedule {
     //TODO - Validar hora do agendamento
     @Scheduled(cron = "0 0 0,5 * * *")
     public void lostDataSchedule() {
-        List<StationEntity> stations = stationService.findAll();
+        List<StationDTO> stations = stationService.findAll();
         Date date = new Date();
         stations.forEach(station -> {
             findLostData(station);
@@ -43,7 +43,7 @@ public class LostDataSchedule {
         });
     }
 
-    private void findLostData(StationEntity station) {
+    private void findLostData(StationDTO station) {
         List<LostDataEntity> lostDatas = lostDataService.findByStationId(station.getId());
 
         lostDatas.forEach(lostData -> {
@@ -62,18 +62,18 @@ public class LostDataSchedule {
         });
     }
 
-    private void validateRequests(StationEntity station, Date date) {
+    private void validateRequests(StationDTO station, Date date) {
         if (isRequestsPerDayValid(station, date)) {
             return;
         }
         lostDataService.save(
                 LostDataEntity.builder()
                     .date(date)
-                    .station(station)
+                    .station(stationService.findById(station.getId()))
                     .build());
     }
 
-    private boolean isRequestsPerDayValid(StationEntity station, Date date) {
+    private boolean isRequestsPerDayValid(StationDTO station, Date date) {
         return station.getRequestsPerDay().equals(deviceTelemetryHourService.countByDate(date, station.getId()));
     }
 }

@@ -1,7 +1,7 @@
 package com.ifsc.julio.javatcc.schedule;
 
+import com.ifsc.julio.javatcc.dto.StationDTO;
 import com.ifsc.julio.javatcc.entity.HistoryEmailEntity;
-import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -36,7 +36,7 @@ public class CheckStationDataSchedule {
     //TODO - Validar tempo do agendamento
     @Scheduled(cron = "0 0 0,5 * * *")
     public void checkStationDataSchedule() {
-        List<StationEntity> stations = stationService.findAll();
+        List<StationDTO> stations = stationService.findAll();
 
         stations.forEach(station -> {
             if (station.isDisabled() || !deviceTelemetryHourService.hasPassedThreeHoursSinceLimitDate(station.getId())) {
@@ -61,16 +61,16 @@ public class CheckStationDataSchedule {
         emailService.sendEmail(email, SUBJECT_EMAIL, text);
     }
 
-    private void saveHistoryEmail(StationEntity station, String text) {
+    private void saveHistoryEmail(StationDTO station, String text) {
         historyEmailService.save(HistoryEmailEntity.builder()
                 .date(new Date())
-                .station(station)
+                .station(stationService.findById(station.getId()))
                 .text(text)
                 .build());
     }
 
     //TODO - Validar texto de envio
-    private String getText(StationEntity station) {
+    private String getText(StationDTO station) {
         StringBuilder text = new StringBuilder();
         text.append("Prezado(a),\n\n")
             .append("Favor verificar se a estação localizada no(a) ")
