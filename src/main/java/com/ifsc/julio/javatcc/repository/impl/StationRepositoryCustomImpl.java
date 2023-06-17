@@ -22,14 +22,12 @@ public class StationRepositoryCustomImpl implements StationRepositoryCustom {
     public List<StationEntity> findAllWithFilters(FiltroStationDTO filtroStationDTO) {
         BooleanBuilder where = new BooleanBuilder();
 
-        if (nonNull(filtroStationDTO.getUf())) {
+        if (nonNull(filtroStationDTO.getIbge())) {
+            where.and(qStationEntity.ibge.eq(filtroStationDTO.getIbge()));
+        } else if (nonNull(filtroStationDTO.getUf())) {
             where.and(qStationEntity.uf.eq(filtroStationDTO.getUf()));
         } else if (nonNull(filtroStationDTO.getRegion())) {
             where.and(qStationEntity.uf.in(filtroStationDTO.getRegion().getStates()));
-        }
-
-        if (nonNull(filtroStationDTO.getCodigoIBGE())) {
-            where.and(qStationEntity.codigoIBGE.eq(filtroStationDTO.getCodigoIBGE()));
         }
 
         return new JPAQueryFactory(em)

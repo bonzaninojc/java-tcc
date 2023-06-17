@@ -25,7 +25,7 @@ public class StationEntity {
     private String uf;
     private String city;
     private String address;
-    private String codigoIBGE;
+    private String ibge;
     private Date date;
     private String email;
     private String phone;
@@ -44,7 +44,7 @@ public class StationEntity {
         nickname = stationDTO.getNickname();
         lat = stationDTO.getLat();
         lng = stationDTO.getLng();
-        codigoIBGE = stationDTO.getCodigoIBGE();
+        ibge = stationDTO.getIbge();
         requestsPerDay = ofNullable(stationDTO.getRequestsPerDay()).orElse(REQUESTS_DEFAULT);
     }
 }

@@ -26,7 +26,7 @@ public class DataInitializer {
                 .phone("48991455898")
                 .requestsPerDay(REQUESTS_DEFAULT)
                 .nickname("Casa")
-                .codigoIBGE("4218707")
+                .ibge("4218707")
                 .lat("-28.487022532987982")
                 .lng("-49.011909619973345")
                 .build();
@@ -40,7 +40,7 @@ public class DataInitializer {
                 .phone("48984840861")
                 .requestsPerDay(REQUESTS_DEFAULT)
                 .nickname("IFSC")
-                .codigoIBGE("4218707")
+                .ibge("4218707")
                 .lat("-28.474675405574864")
                 .lng("-49.0238219011332")
                 .build();

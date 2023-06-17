@@ -11,7 +11,7 @@ public class StationDTO {
     private UUID id;
     private String uf;
     private String city;
-    private String codigoIBGE;
+    private String ibge;
     private String address;
     private Date date;
     private String email;

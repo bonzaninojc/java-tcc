@@ -9,5 +9,5 @@ import lombok.*;
 public class FiltroStationDTO {
     private Region region;
     private String uf;
-    private String codigoIBGE;
+    private String ibge;
 }
