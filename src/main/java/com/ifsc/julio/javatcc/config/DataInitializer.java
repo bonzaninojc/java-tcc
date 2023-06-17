@@ -17,25 +17,33 @@ public class DataInitializer {
 
     @PostConstruct
     public void initStation() {
-        StationDTO stationTubarao = StationDTO.builder()
+        StationDTO station1 = StationDTO.builder()
                 .uf("SC")
                 .city("Tubarão")
-                .address("IFSC")
+                .address("Rua Santos Dumont")
                 .date(new Date())
                 .email("julio.bp25@aluno.ifsc.edu.br")
                 .phone("48991455898")
                 .requestsPerDay(REQUESTS_DEFAULT)
+                .nickname("Casa")
+                .codigoIBGE("4218707")
+                .lat("-28.487022532987982")
+                .lng("-49.011909619973345")
                 .build();
 
-        StationDTO stationCapivariDeBaixo = StationDTO.builder()
+        StationDTO station2 = StationDTO.builder()
                 .uf("SC")
-                .city("Capivari De Baixo")
+                .city("Tubarão")
                 .address("IFSC")
                 .date(new Date())
                 .email("vinicius.sb2002@aluno.ifsc.edu.br")
                 .phone("48984840861")
                 .requestsPerDay(REQUESTS_DEFAULT)
+                .nickname("IFSC")
+                .codigoIBGE("4218707")
+                .lat("-28.474675405574864")
+                .lng("-49.0238219011332")
                 .build();
-        stationService.saveAll(List.of(stationTubarao, stationCapivariDeBaixo));
+        stationService.saveAll(List.of(station1, station2));
     }
 }

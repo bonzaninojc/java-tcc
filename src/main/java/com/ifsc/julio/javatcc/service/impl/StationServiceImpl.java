@@ -1,7 +1,6 @@
 package com.ifsc.julio.javatcc.service.impl;
 
-import com.ifsc.julio.javatcc.dto.DisableStationDTO;
-import com.ifsc.julio.javatcc.dto.StationDTO;
+import com.ifsc.julio.javatcc.dto.*;
 import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.exception.StationException;
 import com.ifsc.julio.javatcc.repository.StationRepository;
@@ -79,6 +78,14 @@ public class StationServiceImpl implements StationService {
     @Override
     public List<StationDTO> findAll() {
         return stationRepository.findAll()
+                .stream()
+                .map(station -> modelMapper.map(station, StationDTO.class))
+                .collect(toList());
+    }
+
+    @Override
+    public List<StationDTO> findAllWithFilters(FiltroStationDTO filtroStationDTO) {
+        return stationRepository.findAllWithFilters(filtroStationDTO)
                 .stream()
                 .map(station -> modelMapper.map(station, StationDTO.class))
                 .collect(toList());

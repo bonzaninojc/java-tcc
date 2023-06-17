@@ -25,11 +25,15 @@ public class StationEntity {
     private String uf;
     private String city;
     private String address;
+    private String codigoIBGE;
     private Date date;
     private String email;
     private String phone;
     private boolean disabled;
     private Integer requestsPerDay;
+    private String nickname;
+    private String lat;
+    private String lng;
 
     public void update(StationDTO stationDTO) {
         uf = stationDTO.getUf();
@@ -37,6 +41,10 @@ public class StationEntity {
         address = stationDTO.getAddress();
         email = stationDTO.getEmail();
         phone = stationDTO.getPhone();
+        nickname = stationDTO.getNickname();
+        lat = stationDTO.getLat();
+        lng = stationDTO.getLng();
+        codigoIBGE = stationDTO.getCodigoIBGE();
         requestsPerDay = ofNullable(stationDTO.getRequestsPerDay()).orElse(REQUESTS_DEFAULT);
     }
 }
