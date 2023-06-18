@@ -76,6 +76,11 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
+    public StationDTO findByIdDTO(UUID stationId) {
+        return modelMapper.map(findById(stationId), StationDTO.class);
+    }
+
+    @Override
     public List<StationDTO> findAll() {
         return stationRepository.findAll()
                 .stream()
