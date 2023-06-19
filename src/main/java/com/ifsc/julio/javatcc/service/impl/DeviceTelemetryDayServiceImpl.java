@@ -1,5 +1,7 @@
 package com.ifsc.julio.javatcc.service.impl;
 
+import com.ifsc.julio.javatcc.dto.GraphicValueDTO;
+import com.ifsc.julio.javatcc.dto.GraphicValueFilterDTO;
 import com.ifsc.julio.javatcc.entity.DeviceTelemetryDayEntity;
 import com.ifsc.julio.javatcc.repository.DeviceTelemetryDayRepository;
 import com.ifsc.julio.javatcc.service.DeviceTelemetryDayService;
@@ -16,5 +18,15 @@ public class DeviceTelemetryDayServiceImpl implements DeviceTelemetryDayService 
     @Override
     public void saveAll(List<DeviceTelemetryDayEntity> entities) {
         deviceTelemetryDayRepository.saveAll(entities);
+    }
+
+    @Override
+    public List<GraphicValueDTO> getHumidityByDay(GraphicValueFilterDTO graphicValueFilterDTO) {
+        return deviceTelemetryDayRepository.getHumidityByDay(graphicValueFilterDTO);
+    }
+
+    @Override
+    public List<GraphicValueDTO> getHumidityByMonth(GraphicValueFilterDTO graphicValueDTO) {
+        return deviceTelemetryDayRepository.getHumidityByMonth(graphicValueDTO);
     }
 }
