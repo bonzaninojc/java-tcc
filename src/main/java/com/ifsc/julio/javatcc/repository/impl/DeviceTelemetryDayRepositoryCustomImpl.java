@@ -31,9 +31,11 @@ public class DeviceTelemetryDayRepositoryCustomImpl implements DeviceTelemetryDa
                     )
                 )
                 .from(telemetry)
-                .where(telemetry.key.eq(graphicValueFilterDTO.getKey())
-                        .and(telemetry.station.id.eq(graphicValueFilterDTO.getStationId())));
+                .where(telemetry.key.eq(graphicValueFilterDTO.getKey()));
 
+        if (nonNull(graphicValueFilterDTO.getStationId())) {
+            query.where(telemetry.station.id.eq(graphicValueFilterDTO.getStationId()));
+        }
         if (nonNull(graphicValueFilterDTO.getInitDate()) && nonNull(graphicValueFilterDTO.getFinalDate())) {
             query.where(telemetry.date.between(graphicValueFilterDTO.getInitDate(), graphicValueFilterDTO.getFinalDate()));
         }
@@ -54,9 +56,11 @@ public class DeviceTelemetryDayRepositoryCustomImpl implements DeviceTelemetryDa
                     )
                 )
                 .from(telemetry)
-                .where(telemetry.key.eq(graphicValueFilterDTO.getKey())
-                        .and(telemetry.station.id.eq(graphicValueFilterDTO.getStationId())));
+                .where(telemetry.key.eq(graphicValueFilterDTO.getKey()));
 
+        if (nonNull(graphicValueFilterDTO.getStationId())) {
+            query.where(telemetry.station.id.eq(graphicValueFilterDTO.getStationId()));
+        }
         if (nonNull(graphicValueFilterDTO.getInitDate()) && nonNull(graphicValueFilterDTO.getFinalDate())) {
             query.where(telemetry.date.between(graphicValueFilterDTO.getInitDate(), graphicValueFilterDTO.getFinalDate()));
         }
