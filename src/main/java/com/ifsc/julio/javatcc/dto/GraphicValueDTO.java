@@ -9,4 +9,5 @@ import java.util.Date;
 public class GraphicValueDTO {
     private Date date;
     private Double value;
+    private String key;
 }

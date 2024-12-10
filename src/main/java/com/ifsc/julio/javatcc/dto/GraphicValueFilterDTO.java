@@ -1,16 +1,19 @@
 package com.ifsc.julio.javatcc.dto;
 
 import lombok.*;
+
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 public class GraphicValueFilterDTO {
-    private UUID stationId;
-    private String key;
+    private List<UUID> stationIds;
+    private List<String> keys;
     private String average;
-    private Date initDate;
-    private Date finalDate;
+    private LocalDate initDate;
+    private LocalDate finalDate;
 }

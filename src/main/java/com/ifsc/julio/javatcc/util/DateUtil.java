@@ -1,5 +1,6 @@
 package com.ifsc.julio.javatcc.util;
 
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import static java.util.Calendar.*;
@@ -27,5 +28,11 @@ public class DateUtil {
         calendar.set(MILLISECOND, 999);
 
         return calendar.getTime();
+    }
+
+    public static  Date localDateToDate(java.time.LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
     }
 }

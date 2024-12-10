@@ -1,13 +1,13 @@
-package com.ifsc.julio.javatcc.service;
+package com.ifsc.julio.javatcc.repository;
 
 import com.ifsc.julio.javatcc.dto.GraphicValueDTO;
 import com.ifsc.julio.javatcc.dto.GraphicValueFilterDTO;
 import com.ifsc.julio.javatcc.dto.GraphicValueYearDTO;
-import com.ifsc.julio.javatcc.entity.DeviceTelemetryDayEntity;
+
 import java.util.List;
 
-public interface DeviceTelemetryDayService {
-    void saveAll(List<DeviceTelemetryDayEntity> entities);
+public interface DeviceTelemetryDataRepositoryCustom {
+
     List<GraphicValueDTO> getDataByDay(GraphicValueFilterDTO graphicValueFilterDTO);
     List<GraphicValueDTO> getDataByMonth(GraphicValueFilterDTO graphicValueFilterDTO);
 
