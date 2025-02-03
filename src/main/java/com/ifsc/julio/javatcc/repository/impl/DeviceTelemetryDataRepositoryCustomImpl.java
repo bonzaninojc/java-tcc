@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-import static com.ifsc.julio.javatcc.util.DateUtil.localDateToDate;
+import static com.ifsc.julio.javatcc.util.DateUtil.*;
 import static com.querydsl.core.types.dsl.Expressions.*;
 import static java.util.Objects.*;
 
@@ -36,9 +36,10 @@ public class DeviceTelemetryDataRepositoryCustomImpl implements DeviceTelemetryD
                 .select(
                     Projections.constructor(
                         GraphicValueDTO.class,
-                        telemetry.date,
+                        Expressions.stringTemplate("to_char({0}, 'HH24')", telemetry.date),
                         telemetry.value,
-                        telemetry.key
+                        telemetry.key,
+                        telemetry.station.id
                     )
                 )
                 .from(telemetry)
@@ -47,9 +48,12 @@ public class DeviceTelemetryDataRepositoryCustomImpl implements DeviceTelemetryD
         if (nonNull(graphicValueFilterDTO.getStationIds()) && !graphicValueFilterDTO.getStationIds().isEmpty()) {
             query.where(telemetry.station.id.in(graphicValueFilterDTO.getStationIds()));
         }
-        if (nonNull(graphicValueFilterDTO.getInitDate()) && nonNull(graphicValueFilterDTO.getFinalDate())) {
-            query.where(telemetry.date.between(localDateToDate(graphicValueFilterDTO.getInitDate()),
-                    localDateToDate(graphicValueFilterDTO.getFinalDate()) ));
+
+        if (nonNull(graphicValueFilterDTO.getInitDate())) {
+            Date initDate = localDateToDate(graphicValueFilterDTO.getInitDate());
+            Date startOfDay = getStartOfDay(initDate);
+            Date endOfDay = getEndOfDay(initDate);
+            query.where(telemetry.date.between(startOfDay, endOfDay));
         }
 
         return query.fetch();
@@ -61,9 +65,10 @@ public class DeviceTelemetryDataRepositoryCustomImpl implements DeviceTelemetryD
                 .select(
                     Projections.constructor(
                         GraphicValueDTO.class,
-                        telemetryDay.date,
+                         Expressions.stringTemplate("to_char({0}, 'DD')", telemetryDay.date),
                         telemetryDay.value,
-                        telemetryDay.key
+                        telemetryDay.key,
+                        telemetryDay.station.id
                     )
                 )
                 .from(telemetryDay)
@@ -87,15 +92,18 @@ public class DeviceTelemetryDataRepositoryCustomImpl implements DeviceTelemetryD
                         Projections.constructor(
                                 GraphicValueYearDTO.class,
                                 Expressions.stringTemplate("TO_CHAR({0}, 'MM')", telemetryDay.date).as("date"),
+                                telemetryDay.value.avg().as("value"),
                                 telemetryDay.key,
-                                telemetryDay.value.avg().as("value")
+                                telemetryDay.station.id
+
                         )
                 )
                 .from(telemetryDay)
                 .where(telemetryDay.key.in(graphicValueFilterDTO.getKeys()))
                 .groupBy(
                         Expressions.stringTemplate("TO_CHAR({0}, 'MM')", telemetryDay.date),
-                        telemetryDay.key
+                        telemetryDay.key,
+                        telemetryDay.station.id
                 );
 
         if (nonNull(graphicValueFilterDTO.getStationIds()) && !graphicValueFilterDTO.getStationIds().isEmpty()) {

@@ -3,6 +3,7 @@ package com.ifsc.julio.javatcc.dto;
 import lombok.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,8 +12,8 @@ import java.util.Date;
 @Setter
 public class GraphicValueYearDTO {
     private String date;
-    private String key;
     private Double value;
-
+    private String key;
+    private UUID stationId;
 
 }
