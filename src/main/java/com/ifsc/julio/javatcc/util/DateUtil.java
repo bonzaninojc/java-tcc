@@ -1,11 +1,16 @@
 package com.ifsc.julio.javatcc.util;
 
+import com.ifsc.julio.javatcc.exception.UtilityClassException;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import static java.util.Calendar.*;
 
 public class DateUtil {
+
+    private DateUtil() {
+        throw new UtilityClassException("Utility Class.");
+    }
 
     public static Date getStartOfDay(Date date) {
         Calendar calendar = getInstance();

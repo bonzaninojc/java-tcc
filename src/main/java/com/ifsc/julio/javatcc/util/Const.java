@@ -1,9 +1,14 @@
 package com.ifsc.julio.javatcc.util;
 
+import com.ifsc.julio.javatcc.exception.UtilityClassException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Const {
+
+    private Const() {
+        throw new UtilityClassException("Utility Class.");
+    }
 
     public static final String LOGIN_ENDPOINT = "%s/api/auth/login";
     public static final String DEVICE_ENDPOINT = "%s/api/plugins/telemetry/DEVICE/%s/values/timeseries";

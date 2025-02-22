@@ -6,24 +6,21 @@ import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.exception.StationException;
 import com.ifsc.julio.javatcc.repository.StationRepository;
 import com.ifsc.julio.javatcc.service.StationService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import static com.ifsc.julio.javatcc.util.Const.REQUESTS_DEFAULT;
 import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
 
+@AllArgsConstructor
 @Service
 public class StationServiceImpl implements StationService {
 
-    @Autowired
     private StationRepository stationRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Override
@@ -41,11 +38,7 @@ public class StationServiceImpl implements StationService {
         if (isNull(stationDTO.getId())) {
             throw new StationException("Identificador da Estação não informado.");
         }
-        Optional<StationEntity> stationEntityOptional = stationRepository.findById(stationDTO.getId());
-        if (stationEntityOptional.isEmpty()) {
-            throw new StationException("Estação não encontrada.");
-        }
-        StationEntity stationEntity = stationEntityOptional.get();
+        StationEntity stationEntity = findById(stationDTO.getId());
         stationEntity.update(stationDTO);
         return modelMapper.map(stationRepository.save(stationEntity), StationDTO.class);
     }
@@ -55,11 +48,7 @@ public class StationServiceImpl implements StationService {
         if (isNull(stationId)) {
             throw new StationException("Identificador da Estação não informado.");
         }
-        Optional<StationEntity> stationEntityOptional = stationRepository.findById(stationId);
-        if (stationEntityOptional.isEmpty()) {
-            throw new StationException("Estação não encontrada.");
-        }
-        StationEntity stationEntity = stationEntityOptional.get();
+        StationEntity stationEntity = findById(stationId);
         stationEntity.setDisabled(true);
         stationRepository.save(stationEntity);
     }
@@ -73,7 +62,7 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public StationEntity findById(UUID stationId) {
-        return stationRepository.findById(stationId).orElse(null);
+        return stationRepository.findById(stationId).orElseThrow(() -> new StationException("Estação não encontrada."));
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.ifsc.julio.javatcc.rest;
 
 import com.google.gson.Gson;
-import com.ifsc.julio.javatcc.dto.*;
 import com.ifsc.julio.javatcc.dto.thingsboard.*;
-import com.ifsc.julio.javatcc.service.StationService;
 import com.ifsc.julio.javatcc.util.ThingsBoardUtil;
 import java.net.URI;
 import java.time.Duration;
@@ -27,9 +25,6 @@ public class ThingsBoardRest {
     private LocalDateTime localDateTimeToken;
 
     @Autowired
-    private StationService stationService;
-
-    @Autowired
     private ThingsBoardUtil thingsBoardUtil;
 
     @Autowired
@@ -43,10 +38,10 @@ public class ThingsBoardRest {
     private ThingsboardValuesDTO getThingsboardValuesDTO(ThingsboardSearchDTO thingsboardSearchDTO) {
         ThingsboardValuesDTO thingsboardValuesDTO = getThingsboardValuesDTORest(thingsboardSearchDTO);
 
-        List<TelemetryValueDTO> filteredTemperature = filterTelemetryByStation(thingsboardValuesDTO.getTemperature(), thingsboardSearchDTO.getStationId());
+        List<DeviceValueDTO> filteredTemperature = filterTelemetryByStation(thingsboardValuesDTO.getTemperature(), thingsboardSearchDTO.getStationId());
         thingsboardValuesDTO.setTemperature(filteredTemperature);
 
-        List<TelemetryValueDTO> filteredHumidity = filterTelemetryByStation(thingsboardValuesDTO.getHumidity(), thingsboardSearchDTO.getStationId());
+        List<DeviceValueDTO> filteredHumidity = filterTelemetryByStation(thingsboardValuesDTO.getHumidity(), thingsboardSearchDTO.getStationId());
         thingsboardValuesDTO.setHumidity(filteredHumidity);
 
         return thingsboardValuesDTO;
@@ -77,7 +72,7 @@ public class ThingsBoardRest {
                 .toUri();
     }
 
-    private List<TelemetryValueDTO> filterTelemetryByStation(List<TelemetryValueDTO> telemetryList, UUID stationId) {
+    private List<DeviceValueDTO> filterTelemetryByStation(List<DeviceValueDTO> telemetryList, UUID stationId) {
         return telemetryList.stream()
                 .filter(telemetry -> telemetry.getStationUUID().equals(stationId))
                 .collect(toList());

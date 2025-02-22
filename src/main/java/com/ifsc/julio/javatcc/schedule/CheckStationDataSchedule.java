@@ -3,7 +3,7 @@ package com.ifsc.julio.javatcc.schedule;
 import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.entity.HistoryEmailEntity;
 import com.ifsc.julio.javatcc.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import static java.util.Objects.*;
 
+@AllArgsConstructor
 @EnableScheduling
 @Component
 public class CheckStationDataSchedule {
@@ -18,13 +19,8 @@ public class CheckStationDataSchedule {
     private static final String OWNER_EMAIL = "julio.bp25@aluno.ifsc.edu.br";
     private static final String SUBJECT_EMAIL = "Estação com mal funcionamento";
 
-    @Autowired
     private StationService stationService;
-
-    @Autowired
     private HistoryEmailService historyEmailService;
-
-    @Autowired
     private EmailService emailService;
 
     //TODO - Validar tempo do agendamento

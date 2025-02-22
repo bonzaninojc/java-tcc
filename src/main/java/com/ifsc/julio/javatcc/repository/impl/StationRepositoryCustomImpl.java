@@ -20,6 +20,13 @@ public class StationRepositoryCustomImpl implements StationRepositoryCustom {
 
     @Override
     public List<StationEntity> findAllWithFilters(FiltroStationDTO filtroStationDTO) {
+        return new JPAQueryFactory(em)
+                .selectFrom(qStationEntity)
+                .where(getWhere(filtroStationDTO))
+                .fetch();
+    }
+
+    private BooleanBuilder getWhere(FiltroStationDTO filtroStationDTO) {
         BooleanBuilder where = new BooleanBuilder();
 
         if (nonNull(filtroStationDTO.getIbge())) {
@@ -29,10 +36,6 @@ public class StationRepositoryCustomImpl implements StationRepositoryCustom {
         } else if (nonNull(filtroStationDTO.getRegion())) {
             where.and(qStationEntity.uf.in(filtroStationDTO.getRegion().getStates()));
         }
-
-        return new JPAQueryFactory(em)
-                .selectFrom(qStationEntity)
-                .where(where)
-                .fetch();
+        return where;
     }
 }

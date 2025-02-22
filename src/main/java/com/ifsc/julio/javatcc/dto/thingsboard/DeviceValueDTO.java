@@ -1,4 +1,4 @@
-package com.ifsc.julio.javatcc.dto;
+package com.ifsc.julio.javatcc.dto.thingsboard;
 
 import lombok.*;
 import java.util.UUID;
@@ -7,7 +7,7 @@ import static java.util.Objects.*;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class TelemetryValueDTO {
+public class DeviceValueDTO {
     private Long ts;
     private Double value;
     private String stationId;

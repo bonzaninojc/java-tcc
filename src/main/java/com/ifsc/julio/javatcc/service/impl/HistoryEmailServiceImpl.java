@@ -3,13 +3,13 @@ package com.ifsc.julio.javatcc.service.impl;
 import com.ifsc.julio.javatcc.entity.HistoryEmailEntity;
 import com.ifsc.julio.javatcc.repository.HistoryEmailRepository;
 import com.ifsc.julio.javatcc.service.HistoryEmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@AllArgsConstructor
 @Service
 public class HistoryEmailServiceImpl implements HistoryEmailService {
 
-    @Autowired
     private HistoryEmailRepository historyEmailRepository;
 
     @Override

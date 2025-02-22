@@ -3,15 +3,15 @@ package com.ifsc.julio.javatcc.config;
 import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.service.*;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.*;
 import static com.ifsc.julio.javatcc.util.Const.*;
 
+@AllArgsConstructor
 @Component
 public class DataInitializer {
 
-    @Autowired
     private StationService stationService;
 
     @PostConstruct
