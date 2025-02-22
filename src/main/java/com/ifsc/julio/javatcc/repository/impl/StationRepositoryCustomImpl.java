@@ -1,6 +1,6 @@
 package com.ifsc.julio.javatcc.repository.impl;
 
-import com.ifsc.julio.javatcc.dto.FiltroStationDTO;
+import com.ifsc.julio.javatcc.dto.station.FiltroStationDTO;
 import com.ifsc.julio.javatcc.entity.QStationEntity;
 import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.repository.StationRepositoryCustom;

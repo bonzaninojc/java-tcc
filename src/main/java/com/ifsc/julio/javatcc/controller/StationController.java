@@ -1,6 +1,7 @@
 package com.ifsc.julio.javatcc.controller;
 
-import com.ifsc.julio.javatcc.dto.*;
+import com.ifsc.julio.javatcc.dto.station.FiltroStationDTO;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.exception.StationException;
 import com.ifsc.julio.javatcc.service.StationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,8 +33,8 @@ public class StationController {
     }
 
     @PutMapping("disable")
-    public void disable(@RequestBody DisableStationDTO disableStationDTO) throws StationException {
-       stationService.disable(disableStationDTO);
+    public void disable(@PathVariable UUID stationId) throws StationException {
+       stationService.disable(stationId);
     }
 
     @GetMapping("find-by-id/{stationId}")

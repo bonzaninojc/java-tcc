@@ -1,6 +1,7 @@
 package com.ifsc.julio.javatcc.service;
 
-import com.ifsc.julio.javatcc.dto.*;
+import com.ifsc.julio.javatcc.dto.station.FiltroStationDTO;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.exception.StationException;
 import java.util.List;
@@ -14,6 +15,6 @@ public interface StationService {
     StationEntity findById(UUID stationId);
     StationDTO findByIdDTO(UUID stationId);
     List<StationDTO> findAll();
-    void disable(DisableStationDTO disableStationDTO) throws StationException;
+    void disable(UUID stationId) throws StationException;
     List<StationDTO> findAllWithFilters(FiltroStationDTO filtroStationDTO);
 }

@@ -2,8 +2,7 @@ package com.ifsc.julio.javatcc.rest;
 
 import com.google.gson.Gson;
 import com.ifsc.julio.javatcc.dto.*;
-import com.ifsc.julio.javatcc.entity.DeviceTelemetryEntity;
-import com.ifsc.julio.javatcc.service.DeviceTelemetryService;
+import com.ifsc.julio.javatcc.dto.thingsboard.*;
 import com.ifsc.julio.javatcc.service.StationService;
 import com.ifsc.julio.javatcc.util.ThingsBoardUtil;
 import java.net.URI;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import static com.ifsc.julio.javatcc.util.Const.*;
 import static java.lang.String.*;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.*;
 import static org.springframework.http.HttpMethod.*;
@@ -29,9 +27,6 @@ public class ThingsBoardRest {
     private LocalDateTime localDateTimeToken;
 
     @Autowired
-    private DeviceTelemetryService deviceTelemetryService;
-
-    @Autowired
     private StationService stationService;
 
     @Autowired
@@ -40,22 +35,29 @@ public class ThingsBoardRest {
     @Autowired
     private Gson gson;
 
-    public void saveTelemetry(DeviceSearchDTO deviceSearch) {
-        DeviceTelemetryDTO deviceTelemetryDTO = getDeviceTelemetryDTO(deviceSearch);
-        saveTelemetry(deviceTelemetryDTO);
+    public void saveTelemetry(ThingsboardSearchDTO thingsboardSearchDTO) {
+        ThingsboardValuesDTO thingsboardValuesDTO = getThingsboardValuesDTO(thingsboardSearchDTO);
+        //TODO - Salvar valores
     }
 
-    private DeviceTelemetryDTO getDeviceTelemetryDTO(DeviceSearchDTO deviceSearch) {
+    private ThingsboardValuesDTO getThingsboardValuesDTO(ThingsboardSearchDTO thingsboardSearchDTO) {
+        ThingsboardValuesDTO thingsboardValuesDTO = getThingsboardValuesDTORest(thingsboardSearchDTO);
+
+        List<TelemetryValueDTO> filteredTemperature = filterTelemetryByStation(thingsboardValuesDTO.getTemperature(), thingsboardSearchDTO.getStationId());
+        thingsboardValuesDTO.setTemperature(filteredTemperature);
+
+        List<TelemetryValueDTO> filteredHumidity = filterTelemetryByStation(thingsboardValuesDTO.getHumidity(), thingsboardSearchDTO.getStationId());
+        thingsboardValuesDTO.setHumidity(filteredHumidity);
+
+        return thingsboardValuesDTO;
+    }
+
+    private ThingsboardValuesDTO getThingsboardValuesDTORest(ThingsboardSearchDTO thingsboardSearchDTO) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.exchange(getUri(deviceSearch), GET, getRequestEntity(), String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(getUri(thingsboardSearchDTO), GET, getRequestEntity(), String.class);
         String responseBody = responseEntity.getBody();
 
-        DeviceTelemetryDTO deviceTelemetryDTO = gson.fromJson(responseBody, DeviceTelemetryDTO.class);
-
-        if (isNull(deviceSearch.getStationId())) {
-            return deviceTelemetryDTO;
-        }
-        return getDeviceTelemetryDTOPerStation(deviceTelemetryDTO, deviceSearch.getStationId());
+        return gson.fromJson(responseBody, ThingsboardValuesDTO.class);
     }
 
     private HttpEntity<?> getRequestEntity() {
@@ -65,47 +67,20 @@ public class ThingsBoardRest {
         return new HttpEntity<>(null, headers);
     }
 
-    private URI getUri(DeviceSearchDTO deviceSearch) {
+    private URI getUri(ThingsboardSearchDTO thingsboardSearchDTO) {
         return fromUriString(format(DEVICE_ENDPOINT, thingsBoardUtil.getUrl(), thingsBoardUtil.getDevice()))
-                .queryParam("keys", deviceSearch.getKeysString())
-                .queryParam("startTs", deviceSearch.getStartMiliseconds())
-                .queryParam("endTs", deviceSearch.getEndMiliseconds())
+                .queryParam("keys", thingsboardSearchDTO.getKeysString())
+                .queryParam("startTs", thingsboardSearchDTO.getStartMiliseconds())
+                .queryParam("endTs", thingsboardSearchDTO.getEndMiliseconds())
                 .queryParam("limit", REGISTER_LIMIT)
                 .build()
                 .toUri();
-    }
-
-    private DeviceTelemetryDTO getDeviceTelemetryDTOPerStation(DeviceTelemetryDTO deviceTelemetryDTO, UUID stationId) {
-        List<TelemetryValueDTO> filteredTemperature = filterTelemetryByStation(deviceTelemetryDTO.getTemperature(), stationId);
-        deviceTelemetryDTO.setTemperature(filteredTemperature);
-
-        List<TelemetryValueDTO> filteredHumidity = filterTelemetryByStation(deviceTelemetryDTO.getHumidity(), stationId);
-        deviceTelemetryDTO.setHumidity(filteredHumidity);
-
-        return deviceTelemetryDTO;
     }
 
     private List<TelemetryValueDTO> filterTelemetryByStation(List<TelemetryValueDTO> telemetryList, UUID stationId) {
         return telemetryList.stream()
                 .filter(telemetry -> telemetry.getStationUUID().equals(stationId))
                 .collect(toList());
-    }
-
-    private void saveTelemetry(DeviceTelemetryDTO deviceTelemetry) {
-        List<DeviceTelemetryEntity> entities = new ArrayList<>();
-        Map<String, List<TelemetryValueDTO>> devices = deviceTelemetry.getDevices();
-
-        devices.forEach((key, list) -> {
-            for (TelemetryValueDTO telemetryValue : list) {
-                DeviceTelemetryEntity telemetryEntity = new DeviceTelemetryEntity();
-                telemetryEntity.setKey(key);
-                telemetryEntity.setDate(new Date(telemetryValue.getTs()));
-                telemetryEntity.setValue(telemetryValue.getValue());
-                telemetryEntity.setStation(stationService.findById(telemetryValue.getStationUUID()));
-                entities.add(telemetryEntity);
-            }
-        });
-        deviceTelemetryService.saveAll(entities);
     }
 
     private String getToken() {

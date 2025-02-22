@@ -1,7 +1,7 @@
 package com.ifsc.julio.javatcc.station;
 
 import com.ifsc.julio.javatcc.BaseTests;
-import com.ifsc.julio.javatcc.dto.StationDTO;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.service.StationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

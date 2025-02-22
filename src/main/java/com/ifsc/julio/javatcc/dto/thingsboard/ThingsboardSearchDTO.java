@@ -1,4 +1,4 @@
-package com.ifsc.julio.javatcc.dto;
+package com.ifsc.julio.javatcc.dto.thingsboard;
 
 import lombok.*;
 import java.util.Date;
@@ -9,7 +9,7 @@ import static java.lang.String.valueOf;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class DeviceSearchDTO {
+public class ThingsboardSearchDTO {
     private List<String> keys;
     private Date start;
     private Date end;

@@ -1,6 +1,6 @@
 package com.ifsc.julio.javatcc.schedule;
 
-import com.ifsc.julio.javatcc.dto.StationDTO;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.entity.HistoryEmailEntity;
 import com.ifsc.julio.javatcc.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +22,10 @@ public class CheckStationDataSchedule {
     private StationService stationService;
 
     @Autowired
-    private DeviceTelemetryHourService deviceTelemetryHourService;
-
-    @Autowired
     private HistoryEmailService historyEmailService;
 
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private WhatsAppService whatsAppService;
 
     //TODO - Validar tempo do agendamento
     @Scheduled(cron = "0 0 0,5 * * *")
@@ -39,7 +33,8 @@ public class CheckStationDataSchedule {
         List<StationDTO> stations = stationService.findAll();
 
         stations.forEach(station -> {
-            if (station.isDisabled() || !deviceTelemetryHourService.hasPassedThreeHoursSinceLimitDate(station.getId())) {
+            //TODO - Fazer regra para envio de email
+            if (station.isDisabled()) {
                 return;
             }
 
@@ -69,7 +64,6 @@ public class CheckStationDataSchedule {
                 .build());
     }
 
-    //TODO - Validar texto de envio
     private String getText(StationDTO station) {
         StringBuilder text = new StringBuilder();
         text.append("Prezado(a),\n\n")
@@ -79,7 +73,7 @@ public class CheckStationDataSchedule {
             .append(station.getCity())
             .append("/")
             .append(station.getUf())
-            .append(" está conectada a internet corretamente.");
+            .append(" está conectada corretamente na internet.");
 
         return text.toString();
     }

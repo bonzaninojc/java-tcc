@@ -1,4 +1,4 @@
-package com.ifsc.julio.javatcc.dto;
+package com.ifsc.julio.javatcc.dto.station;
 
 import com.ifsc.julio.javatcc.enumeration.Region;
 import lombok.*;

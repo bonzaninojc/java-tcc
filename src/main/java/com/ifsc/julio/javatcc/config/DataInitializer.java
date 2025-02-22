@@ -1,7 +1,6 @@
 package com.ifsc.julio.javatcc.config;
 
-import com.ifsc.julio.javatcc.dto.*;
-import com.ifsc.julio.javatcc.entity.*;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.service.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +13,6 @@ public class DataInitializer {
 
     @Autowired
     private StationService stationService;
-
-    @Autowired
-    private DeviceTelemetryHourService deviceTelemetryHourService;
-
-    @Autowired
-    private DeviceTelemetryService deviceTelemetryService;
-
-    @Autowired
-    private DeviceTelemetryDayService deviceTelemetryDayService;
 
     @PostConstruct
     public void initStation() {
@@ -83,64 +73,5 @@ public class DataInitializer {
                 .build();
 
         stationService.saveAll(List.of(station1, station2, station3, station4));
-        generateTelemetryData(stationService.findAll().get(0).getId());
-    }
-
-    private void generateTelemetryData(UUID stationId) {
-        List<DeviceTelemetryEntity> telemetryList = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        Date now = new Date();
-        calendar.setTime(now);
-        calendar.add(Calendar.WEEK_OF_YEAR, -1);
-        StationEntity station = stationService.findById(stationId);
-
-        Random random = new Random();
-
-        while (calendar.getTime().before(now)) {
-            Date date = calendar.getTime();
-            Double value = random.nextDouble() * 50;
-
-            DeviceTelemetryEntity entity = DeviceTelemetryEntity.builder()
-                    .date(date)
-                    .value(value)
-                    .key("humidity")
-                    .station(station)
-                    .build();
-
-            telemetryList.add(entity);
-            calendar.add(Calendar.MINUTE, 10);
-        }
-        deviceTelemetryService.saveAll(telemetryList);
-        dailySchedule(station);
-    }
-
-    public void dailySchedule(StationEntity station) {
-        List<DeviceTelemetryDayDTO> devices = deviceTelemetryService.getDayAverage(getAverageDTO());
-
-        List<DeviceTelemetryDayEntity> entities = new ArrayList<>();
-        devices.forEach(device -> {
-            DeviceTelemetryDayEntity deviceTelemetryDayEntity = DeviceTelemetryDayEntity.builder()
-                    .date(device.getDay())
-                    .value(device.getAverage())
-                    .key(device.getKey())
-                    .station(station)
-                    .build();
-
-            entities.add(deviceTelemetryDayEntity);
-        });
-        deviceTelemetryDayService.saveAll(entities);
-    }
-
-    private AverageDTO getAverageDTO() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.WEEK_OF_YEAR, -1);
-        Date initDate = calendar.getTime();
-
-        return AverageDTO.builder()
-                .initDate(initDate)
-                .finalDate(new Date())
-                .key("humidity")
-                .build();
     }
 }

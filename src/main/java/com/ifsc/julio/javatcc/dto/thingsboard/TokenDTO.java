@@ -1,4 +1,4 @@
-package com.ifsc.julio.javatcc.dto;
+package com.ifsc.julio.javatcc.dto.thingsboard;
 
 import lombok.*;
 

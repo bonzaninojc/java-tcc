@@ -1,6 +1,6 @@
 package com.ifsc.julio.javatcc.entity;
 
-import com.ifsc.julio.javatcc.dto.StationDTO;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

@@ -1,6 +1,7 @@
 package com.ifsc.julio.javatcc.service.impl;
 
-import com.ifsc.julio.javatcc.dto.*;
+import com.ifsc.julio.javatcc.dto.station.FiltroStationDTO;
+import com.ifsc.julio.javatcc.dto.station.StationDTO;
 import com.ifsc.julio.javatcc.entity.StationEntity;
 import com.ifsc.julio.javatcc.exception.StationException;
 import com.ifsc.julio.javatcc.repository.StationRepository;
@@ -50,16 +51,16 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public void disable(DisableStationDTO disableStationDTO) throws StationException {
-        if (isNull(disableStationDTO.getStationId())) {
+    public void disable(UUID stationId) throws StationException {
+        if (isNull(stationId)) {
             throw new StationException("Identificador da Estação não informado.");
         }
-        Optional<StationEntity> stationEntityOptional = stationRepository.findById(disableStationDTO.getStationId());
+        Optional<StationEntity> stationEntityOptional = stationRepository.findById(stationId);
         if (stationEntityOptional.isEmpty()) {
             throw new StationException("Estação não encontrada.");
         }
         StationEntity stationEntity = stationEntityOptional.get();
-        stationEntity.setDisabled(disableStationDTO.isDisabled());
+        stationEntity.setDisabled(true);
         stationRepository.save(stationEntity);
     }
 
