@@ -37,6 +37,11 @@ public class StationController {
        stationService.disable(stationId);
     }
 
+    @PutMapping("enable")
+    public void enable(@PathVariable UUID stationId) throws StationException {
+        stationService.enable(stationId);
+    }
+
     @GetMapping("find-by-id/{stationId}")
     public StationDTO findById(@PathVariable UUID stationId) {
         return stationService.findByIdDTO(stationId);

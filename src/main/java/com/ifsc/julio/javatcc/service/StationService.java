@@ -11,10 +11,11 @@ public interface StationService {
 
     StationDTO save(StationDTO stationDTO);
     StationDTO update(StationDTO stationDTO) throws StationException;
-    void saveAll(List<StationDTO> stations);
+    List<StationDTO> saveAll(List<StationDTO> stations);
     StationEntity findById(UUID stationId);
     StationDTO findByIdDTO(UUID stationId);
     List<StationDTO> findAll();
-    void disable(UUID stationId) throws StationException;
+    void disable(UUID stationId);
+    void enable(UUID stationId);
     List<StationDTO> findAllWithFilters(FiltroStationDTO filtroStationDTO);
 }

@@ -30,7 +30,7 @@ public class StationServiceImpl implements StationService {
         if (isNull(stationEntity.getRequestsPerDay())) {
             stationEntity.setRequestsPerDay(REQUESTS_DEFAULT);
         }
-        return modelMapper.map(stationRepository.save(stationEntity), StationDTO.class);
+        return toDTO(stationRepository.save(stationEntity));
     }
 
     @Override
@@ -40,24 +40,33 @@ public class StationServiceImpl implements StationService {
         }
         StationEntity stationEntity = findById(stationDTO.getId());
         stationEntity.update(stationDTO);
-        return modelMapper.map(stationRepository.save(stationEntity), StationDTO.class);
+        return toDTO(stationRepository.save(stationEntity));
     }
 
     @Override
     public void disable(UUID stationId) throws StationException {
+        disableStation(stationId, true);
+    }
+
+    @Override
+    public void enable(UUID stationId) {
+        disableStation(stationId, false);
+    }
+
+    private void disableStation(UUID stationId, boolean disable) {
         if (isNull(stationId)) {
             throw new StationException("Identificador da Estação não informado.");
         }
         StationEntity stationEntity = findById(stationId);
-        stationEntity.setDisabled(true);
+        stationEntity.setDisabled(disable);
         stationRepository.save(stationEntity);
     }
 
     @Override
-    public void saveAll(List<StationDTO> stations) {
-        stationRepository.saveAll(stations.stream()
-                .map(station -> modelMapper.map(station, StationEntity.class))
-                .toList());
+    public List<StationDTO> saveAll(List<StationDTO> stations) {
+        return stations.stream()
+                .map(this::save)
+                .toList();
     }
 
     @Override
@@ -67,14 +76,14 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public StationDTO findByIdDTO(UUID stationId) {
-        return modelMapper.map(findById(stationId), StationDTO.class);
+        return toDTO(findById(stationId));
     }
 
     @Override
     public List<StationDTO> findAll() {
         return stationRepository.findAll()
                 .stream()
-                .map(station -> modelMapper.map(station, StationDTO.class))
+                .map(this::toDTO)
                 .collect(toList());
     }
 
@@ -82,7 +91,11 @@ public class StationServiceImpl implements StationService {
     public List<StationDTO> findAllWithFilters(FiltroStationDTO filtroStationDTO) {
         return stationRepository.findAllWithFilters(filtroStationDTO)
                 .stream()
-                .map(station -> modelMapper.map(station, StationDTO.class))
+                .map(this::toDTO)
                 .collect(toList());
+    }
+
+    private StationDTO toDTO(StationEntity stationEntity) {
+        return modelMapper.map(stationEntity, StationDTO.class);
     }
 }
